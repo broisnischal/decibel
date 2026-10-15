@@ -43,7 +43,7 @@ per-app gain + mix ─▶ EQ + tone ─▶ boost ─▶ width ─▶ balance ─
 - Forte excludes itself from every tap. It also excludes processes that record the output device (eqMac's or Loopback's engine), which prevents feedback loops through virtual devices.
 - An app gets its own tap the first time you change its volume. When it launches helpers or quits, the running taps' process lists are updated in place (`kAudioTapPropertyDescription`), so other audio never glitches.
 - Quitting the app (or a crash) destroys the taps and apps play normally again.
-- **Standby:** the taps only exist while something is playing *and* an effect is on (boost, EQ, tone, balance, width, a per-app volume or software volume). Otherwise Forte releases them about 4 seconds later and watches each app's "running output" state, which needs no recording. macOS's purple recording indicator is therefore only shown while Forte is actually processing sound.
+- **Standby:** the taps only exist while something is playing *and* an effect is on (boost, EQ, tone, balance, width, a per-app volume or software volume). Otherwise Forte releases them about 4 seconds later and watches each app's "running output" state, which needs no recording. Media in Now Playing is processed at once; other sound (alerts, a web page's sounds) must keep playing for 1.5 s first, and is released after 2 s of silence. macOS's purple recording indicator is therefore only shown while Forte is actually processing sound, and short dings never trigger it.
 - Now Playing uses Apple's private MediaRemote framework, which since macOS 15.4 only answers Apple-signed processes. Forte loads a small helper (`NowPlayingHelper/`, embedded as `BSNowPlaying.framework`) into `/usr/bin/perl`, which streams state as JSON lines and accepts transport commands on stdin. If that ever stops working, the Now Playing card simply stays hidden.
 - The DSP runs in plain C (`Packages/ForteKit/Sources/BSKernel`), so the audio thread never allocates, locks or touches the Swift runtime. UI changes reach it through relaxed atomics and are smoothed (20 ms gains, 30 ms EQ) to avoid zipper noise.
 
@@ -83,7 +83,7 @@ The 15 tests cover:
 | Symptom | Fix |
 | --- | --- |
 | Banner says permission is needed | System Settings › Privacy & Security › Screen & System Audio Recording, then enable Forte under *System Audio Recording Only*. |
-| Purple dot in the menu bar | That is macOS's system-audio-recording indicator. It shows only while Forte is processing (sound playing and an effect on) and turns off about 4 s after playback stops. |
+| Purple dot in the menu bar | That is macOS's system-audio-recording indicator. It shows only while Forte is processing (sound playing and an effect on) and turns off about 4 s after playback stops, or after 2 s of silence when nothing is in Now Playing. Sounds shorter than 1.5 s outside Now Playing don't trigger it. |
 | Reset the permission prompt | `tccutil reset AudioCapture io.github.broisnischal.forte` |
 | Signal-flow debugging | Launch with `--args -diagnostics YES`, then run `/usr/bin/log stream --predicate 'subsystem == "io.github.broisnischal.forte"'`. It logs input/output levels each second and the app list (▶ playing, `[mixed]` has its own tap) every 5 s. |
 | A mixed app's first sound leaks at 100% | A brand-new process plays through the shared tap until Forte claims it (normally within a few ms). Long-running apps are unaffected. |

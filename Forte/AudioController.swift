@@ -191,9 +191,11 @@ final class AudioController {
     @ObservationIgnored private let activity = AudioActivityMonitor()
     @ObservationIgnored private var permissionReady = false
     @ObservationIgnored private var idleTeardown: DispatchWorkItem?
-    /// Set when the captured audio has been silent with nothing playing in Now Playing, e.g. a paused browser tab
-    /// that keeps its audio stream open. Cleared when playback starts or an app newly starts making sound.
-    @ObservationIgnored private var quiet = false
+    @ObservationIgnored private var pendingStart: DispatchWorkItem?
+    /// Processes whose output was open but silent (with nothing playing in Now Playing) when the tap went idle,
+    /// e.g. a paused browser tab that keeps its audio stream open. They don't count as activity until they stop
+    /// and start again, or playback starts. Another app starting a sound doesn't wake them.
+    @ObservationIgnored private var quietProcesses: Set<AudioObjectID> = []
     @ObservationIgnored private var silenceTimer: Timer?
 
     @ObservationIgnored private var router: SystemAudioRouter? {
@@ -296,12 +298,13 @@ final class AudioController {
         refreshDevices()
         apps = AudioApps.current()
         nowPlaying.start()
-        activity.onChange = { [weak self] _, started in
-            if started { self?.quiet = false }
-            self?.evaluateRoute()
+        activity.onChange = { [weak self] _, _ in
+            guard let self else { return }
+            self.quietProcesses.formIntersection(self.activity.running) // A stopped process is quiet no longer.
+            self.evaluateRoute()
         }
         nowPlaying.onPlaybackStarted = { [weak self] in
-            self?.quiet = false
+            self?.quietProcesses = []
             self?.evaluateRoute()
         }
         if isEnabled { start() }
@@ -343,6 +346,8 @@ final class AudioController {
         restartWork?.cancel()
         idleTeardown?.cancel()
         idleTeardown = nil
+        pendingStart?.cancel()
+        pendingStart = nil
         permissionReady = false
         tearDownRoute()
         status = .off
@@ -357,23 +362,30 @@ final class AudioController {
             || (outputVolumeMode == .software && (outputMuted || outputVolume < 0.999))
     }
 
+    /// An app other than a known-quiet one is playing, and an effect would change its sound.
+    private var wantsRoute: Bool { needsProcessing && !activity.running.isSubset(of: quietProcesses) }
+
     /// Runs the tap only while it matters: sound is playing and an effect is on. macOS shows its recording
     /// indicator whenever the tap is running, so otherwise Forte releases it (after a short grace period, so
     /// gaps between tracks don't churn) and waits in standby.
     private func evaluateRoute() {
         guard isEnabled, permissionReady else { return }
         if case .failed = status { return } // Wait for a retry or a device change.
-        if needsProcessing && activity.isActive && !quiet {
+        if wantsRoute {
             idleTeardown?.cancel()
             idleTeardown = nil
-            if router == nil, restartWork == nil { buildRoute() }
-        } else if router != nil {
+            if router == nil, restartWork == nil { startRoute() }
+            return
+        }
+        pendingStart?.cancel()
+        pendingStart = nil
+        if router != nil {
             guard idleTeardown == nil else { return }
             let work = DispatchWorkItem { [weak self] in
                 MainActor.assumeIsolated {
                     guard let self else { return }
                     self.idleTeardown = nil
-                    guard !(self.needsProcessing && self.activity.isActive && !self.quiet) else { return }
+                    guard !self.wantsRoute else { return }
                     self.tearDownRoute()
                     self.status = .standby
                     self.log.notice("Standby: nothing to process")
@@ -386,6 +398,28 @@ final class AudioController {
         }
     }
 
+    /// Media in Now Playing gets the tap at once. Other sound (alerts, a web page holding a stream open) must
+    /// keep playing for 1.5 s first, so short dings never show the recording indicator.
+    private func startRoute() {
+        if nowPlaying.isPlaying {
+            buildRoute()
+            return
+        }
+        guard pendingStart == nil else { return }
+        let work = DispatchWorkItem { [weak self] in
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                self.pendingStart = nil
+                guard self.isEnabled, self.permissionReady, self.wantsRoute,
+                      self.router == nil, self.restartWork == nil else { return }
+                if case .failed = self.status { return }
+                self.buildRoute()
+            }
+        }
+        pendingStart = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: work)
+    }
+
     private func tearDownRoute() {
         router = nil
         routeListeners = []
@@ -394,19 +428,19 @@ final class AudioController {
         silenceTimer = nil
     }
 
-    /// While routing, notice pauses that leave an app's audio stream open: 6 s of silence (before per-app gain)
+    /// While routing, notice pauses that leave an app's audio stream open: 2 s of silence (before per-app gain)
     /// with nothing playing in Now Playing counts as idle.
     private func watchForSilence() {
-        quiet = false
+        quietProcesses = []
         silenceTimer?.invalidate()
         silenceTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             MainActor.assumeIsolated {
-                guard let self, !self.quiet, let processor = self.processor,
-                      processor.secondsSinceSound > 6, !self.nowPlaying.isPlaying else { return }
-                self.quiet = true
+                guard let self, let processor = self.processor,
+                      processor.secondsSinceSound > 2, !self.nowPlaying.isPlaying else { return }
+                self.quietProcesses = self.activity.running
                 self.idleTeardown?.cancel()
                 self.idleTeardown = nil
-                self.tearDownRoute() // Already silent for 6 s, so no further grace period.
+                self.tearDownRoute() // Already silent for 2 s, so no further grace period.
                 self.status = .standby
                 self.log.notice("Standby: silent with nothing playing")
             }
@@ -420,6 +454,8 @@ final class AudioController {
     }
 
     private func buildRoute() {
+        pendingStart?.cancel()
+        pendingStart = nil
         router = nil // Tear down first: only one set of taps may mute the system at a time.
         routeListeners = []
         planTimer?.invalidate()

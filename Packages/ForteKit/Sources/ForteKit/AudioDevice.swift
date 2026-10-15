@@ -182,3 +182,48 @@ public enum AudioProcesses {
         })
     }
 }
+
+/// Tracks whether any other app is playing audio, using each process's "running output" state. This needs no
+/// recording permission and no tap, so the app can stay idle (and macOS's recording indicator off) until sound plays.
+@MainActor
+public final class AudioActivityMonitor {
+    public private(set) var isActive = false
+    /// Called when the set of playing processes changes; `started` is true when a process newly began output.
+    public var onChange: ((_ active: Bool, _ started: Bool) -> Void)?
+    private var running: Set<AudioObjectID> = []
+
+    private var listListener: AudioPropertyListener?
+    private var processListeners: [AudioObjectID: AudioPropertyListener] = [:]
+    private let ownPID = getpid()
+
+    public init() {
+        listListener = try? AudioPropertyListener(object: HAL.system, selector: kAudioHardwarePropertyProcessObjectList) { [weak self] in
+            self?.refreshProcesses()
+        }
+        refreshProcesses()
+    }
+
+    private func refreshProcesses() {
+        let objects = Set((try? HAL.readArray(HAL.system, kAudioHardwarePropertyProcessObjectList, zero: AudioObjectID(0))) ?? [])
+        processListeners = processListeners.filter { objects.contains($0.key) }
+        for object in objects where processListeners[object] == nil {
+            guard (try? HAL.read(object, kAudioProcessPropertyPID, initial: pid_t(0))) != ownPID else { continue }
+            processListeners[object] = try? AudioPropertyListener(object: object, selector: kAudioProcessPropertyIsRunningOutput) { [weak self] in
+                self?.evaluate()
+            }
+        }
+        evaluate()
+    }
+
+    /// Re-reads every process; also a cheap safety net if a change notification is missed.
+    public func evaluate() {
+        let now = Set(processListeners.keys.filter {
+            ((try? HAL.read($0, kAudioProcessPropertyIsRunningOutput, initial: UInt32(0))) ?? 0) != 0
+        })
+        guard now != running else { return }
+        let started = !now.subtracting(running).isEmpty
+        running = now
+        isActive = !now.isEmpty
+        onChange?(isActive, started)
+    }
+}

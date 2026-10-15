@@ -37,6 +37,8 @@ public final class SoundProcessor: @unchecked Sendable {
 
     public var sampleRate: Double { BSKernelGetSampleRate(kernel) }
     public var latencyFrames: Int { Int(BSKernelGetLatencyFrames(kernel)) }
+    /// Seconds since any captured app last made sound (before per-app gain, so muted apps count).
+    public var secondsSinceSound: Double { BSKernelSecondsSinceSound(kernel) }
 
     public func apply(_ settings: SoundSettings) {
         setBoost(settings.boostDB)

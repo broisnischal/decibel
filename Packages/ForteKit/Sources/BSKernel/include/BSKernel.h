@@ -60,6 +60,10 @@ void BSKernelSetSourceGain(BSKernel *kernel, uint32_t source, float linear);
 /// Pre-gain linear peak of one source since the previous read (shows activity even when muted).
 float BSKernelReadSourcePeak(BSKernel *kernel, uint32_t source);
 
+/// Seconds since any input source last carried sound (above -90 dBFS, measured before per-source gain, so a muted
+/// app still counts). Starts at 0 when the kernel is created.
+double BSKernelSecondsSinceSound(const BSKernel *kernel);
+
 /// Copies meter values and resets the peak-hold fields. Call from a non-real-time thread.
 void BSKernelReadMeters(BSKernel *kernel, BSMeters *outMeters);
 

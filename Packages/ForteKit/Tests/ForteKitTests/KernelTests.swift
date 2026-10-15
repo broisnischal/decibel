@@ -227,6 +227,23 @@ private func dB(_ x: Float) -> Float { 20 * log10(x) }
         #expect(ramp.last! < ramp.first!)
     }
 
+    @Test func tracksTimeSinceSoundBeforeSourceGain() throws {
+        let p = try #require(SoundProcessor(sampleRate: sampleRate))
+        let quiet = makeList([(2, { _, _ in 0 })], frames: 512)
+        let loud = makeList([(2, { _, _ in 0.2 })], frames: 512)
+        let output = makeList([(2, { _, _ in 0 })], frames: 512)
+        defer { free(quiet); free(loud); free(output) }
+
+        p.setSourceGain(0, source: 0) // A muted app is still "making sound".
+        _ = render(p, loud, output)
+        #expect(p.secondsSinceSound < 0.05)
+        Thread.sleep(forTimeInterval: 0.1)
+        _ = render(p, quiet, output)
+        #expect(p.secondsSinceSound >= 0.09)
+        _ = render(p, loud, output)
+        #expect(p.secondsSinceSound < 0.05)
+    }
+
     @Test func missingInputRendersSilence() throws {
         let p = try #require(SoundProcessor(sampleRate: sampleRate))
         let input = makeList([], frames: 512)

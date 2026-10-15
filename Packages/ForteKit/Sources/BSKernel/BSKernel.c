@@ -1,5 +1,6 @@
 #include "BSKernel.h"
 
+#include <mach/mach_time.h>
 #include <math.h>
 #include <stdatomic.h>
 #include <stdlib.h>
@@ -14,6 +15,7 @@
 #define BS_EQ_Q 1.1
 #define BS_BASS_HZ 100.0
 #define BS_TREBLE_HZ 10000.0
+#define BS_SOUND_THRESHOLD 3.2e-5f    // -90 dBFS
 
 const float BSEQBandFrequencies[BS_EQ_BAND_COUNT] = {32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000};
 
@@ -44,6 +46,7 @@ struct BSKernel {
     _Atomic float gainReductionDB;
     _Atomic float sourcePeak[BS_MAX_SOURCES];
     _Atomic uint64_t renderCount;
+    _Atomic uint64_t lastSoundTime;   // mach_absolute_time of the last non-silent input
 
     // Render-thread state.
     float sourceGain[BS_MAX_SOURCES];
@@ -204,6 +207,7 @@ BSKernel *BSKernelCreate(double sampleRate) {
     }
     atomic_init(&k->gainReductionDB, 0.0f);
     atomic_init(&k->renderCount, 0);
+    atomic_init(&k->lastSoundTime, mach_absolute_time());
 
     for (int f = 0; f < BS_EQ_FILTER_COUNT; f++) bs_design_filter(&k->eq[f], f, sampleRate, 0.0);
     k->gain = 1.0f;
@@ -296,6 +300,14 @@ void BSKernelSetSourceGain(BSKernel *k, uint32_t source, float linear) {
 float BSKernelReadSourcePeak(BSKernel *k, uint32_t source) {
     if (source >= BS_MAX_SOURCES) return 0.0f;
     return atomic_exchange_explicit(&k->sourcePeak[source], 0.0f, memory_order_relaxed);
+}
+
+double BSKernelSecondsSinceSound(const BSKernel *k) {
+    static mach_timebase_info_data_t timebase;
+    if (timebase.denom == 0) mach_timebase_info(&timebase);
+    const uint64_t last = atomic_load_explicit(&k->lastSoundTime, memory_order_relaxed);
+    const uint64_t now = mach_absolute_time();
+    return now > last ? (double)(now - last) * timebase.numer / timebase.denom / 1e9 : 0.0;
 }
 
 static inline void bs_store_max(_Atomic float *slot, float value) {
@@ -539,7 +551,12 @@ OSStatus BSKernelIOProc(AudioObjectID device,
         }
         done += n;
     }
-    for (uint32_t s = 0; s < sources; s++) bs_store_max(&k->sourcePeak[s], srcPeak[s]);
+    float loudest = 0.0f;
+    for (uint32_t s = 0; s < sources; s++) {
+        bs_store_max(&k->sourcePeak[s], srcPeak[s]);
+        if (srcPeak[s] > loudest) loudest = srcPeak[s];
+    }
+    if (loudest > BS_SOUND_THRESHOLD) atomic_store_explicit(&k->lastSoundTime, mach_absolute_time(), memory_order_relaxed);
     return noErr;
 }
 

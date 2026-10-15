@@ -16,31 +16,63 @@ public struct AudioApp: Identifiable, Hashable, Sendable {
 
 @MainActor
 public enum AudioApps {
+    /// Alert, UI feedback and power chimes, grouped into one mixer row.
+    public static let systemSoundsID = "system.sounds"
+    private static let systemSoundSources: Set<String> = [
+        "systemsoundserverd", "com.apple.audio.SystemSoundServer-OSX", "com.apple.loginwindow", "loginwindow",
+        "com.apple.PowerChime", "PowerChime", "com.apple.SystemUIServer", "com.apple.UserNotificationCenter",
+    ]
+
+    /// Who a process belongs to. Resolving it walks the process tree, so it is cached per process object.
+    private struct Identity {
+        let pid: pid_t
+        let key: String
+        let name: String
+        let ownerPID: pid_t
+        let isRegularApp: Bool
+    }
+
+    private static var identities: [AudioObjectID: Identity] = [:]
+
+    private static func identity(of object: AudioObjectID, own: pid_t) -> Identity? {
+        guard let pid = try? HAL.read(object, kAudioProcessPropertyPID, initial: pid_t(0)), pid > 0, pid != own else { return nil }
+        if let cached = identities[object], cached.pid == pid { return cached }
+
+        let owner = owningApplication(of: pid)
+        guard owner?.processIdentifier != own else { return nil }
+        let processBundleID = (try? HAL.readString(object, kAudioProcessPropertyBundleID)).flatMap { $0.isEmpty ? nil : $0 }
+        let name = processName(pid)
+        let isSystemSound = owner?.activationPolicy != .regular &&
+            (systemSoundSources.contains(processBundleID ?? "") || systemSoundSources.contains(name))
+        let identity = Identity(
+            pid: pid,
+            key: isSystemSound ? systemSoundsID : owner?.bundleIdentifier ?? processBundleID ?? "process.\(name)",
+            name: isSystemSound ? "System Sounds" : owner?.localizedName ?? name,
+            ownerPID: owner?.processIdentifier ?? pid,
+            isRegularApp: owner?.activationPolicy == .regular)
+        identities[object] = identity
+        return identity
+    }
+
     /// Every process the HAL knows about, grouped by the app responsible for it. Playing apps first.
     public static func current() -> [AudioApp] {
         let own = getpid()
         let objects = (try? HAL.readArray(HAL.system, kAudioHardwarePropertyProcessObjectList, zero: AudioObjectID(0))) ?? []
+        let live = Set(objects)
+        identities = identities.filter { live.contains($0.key) } // Forget processes that have gone.
         var apps: [String: AudioApp] = [:]
 
         for object in objects {
-            guard let pid = try? HAL.read(object, kAudioProcessPropertyPID, initial: pid_t(0)), pid > 0, pid != own else { continue }
-            let owner = owningApplication(of: pid)
-            guard owner?.processIdentifier != own else { continue }
+            guard let identity = identity(of: object, own: own) else { continue }
             let playing = ((try? HAL.read(object, kAudioProcessPropertyIsRunningOutput, initial: UInt32(0))) ?? 0) != 0
-            let processBundleID = (try? HAL.readString(object, kAudioProcessPropertyBundleID)).flatMap { $0.isEmpty ? nil : $0 }
-            let key = owner?.bundleIdentifier ?? processBundleID ?? "process.\(processName(pid))"
 
-            if var app = apps[key] {
+            if var app = apps[identity.key] {
                 app.processes.append(object)
                 app.isPlaying = app.isPlaying || playing
-                apps[key] = app
+                apps[identity.key] = app
             } else {
-                apps[key] = AudioApp(id: key,
-                                     name: owner?.localizedName ?? processName(pid),
-                                     pid: owner?.processIdentifier ?? pid,
-                                     isRegularApp: owner?.activationPolicy == .regular,
-                                     processes: [object],
-                                     isPlaying: playing)
+                apps[identity.key] = AudioApp(id: identity.key, name: identity.name, pid: identity.ownerPID,
+                                              isRegularApp: identity.isRegularApp, processes: [object], isPlaying: playing)
             }
         }
         return apps.values.sorted {

@@ -7,19 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		06B87AF4DE5A2A8C05CA85AE /* EqualizerCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EDD23AEE18753AB3A13716 /* EqualizerCard.swift */; };
-		3CC6656DAC1CB7CA8C17B018 /* MixerTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 392064D80890BEE449E39C72 /* MixerTab.swift */; };
-		3E5DCB3E5991EF9C5DD77148 /* Controls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F5AFDE9D82ABC8E7C5744E8 /* Controls.swift */; };
+		0EF5BB097AE5AF400A5BDC54 /* EqualizerPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175159F08C77586134D0CFC2 /* EqualizerPage.swift */; };
+		54439C8AC05BEE503431EB28 /* MainPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122FD33A0E4351CF35BC61DE /* MainPage.swift */; };
 		5E20D86F8F57EED68E69D7C4 /* BSNowPlaying.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BDC186F4A1615B3C96AAA68 /* BSNowPlaying.m */; };
 		6FA0EB3119564B75DF56D9C7 /* ForteKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3C585197833C6F20093C0994 /* ForteKit */; };
 		7A7F93909F8B3AAF748C1F79 /* AudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22D325A212D0017F0A28DB8 /* AudioController.swift */; };
-		7CF7AD21BEB8C9DCEE6A6957 /* DevicesTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D20C5FCDD12AAD9602921A /* DevicesTab.swift */; };
 		812C16B6CF2DF7821C05258B /* MeterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4520FC0B448265BE8F17266 /* MeterModel.swift */; };
-		B39690CCA28DD6BAB1668364 /* SoundTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C71E966A4ED82238F395FF /* SoundTab.swift */; };
+		91A5C8B7D353C17A82B7090F /* DetailPages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963EAA7CC31EEFFE3A4D7CD6 /* DetailPages.swift */; };
 		B5F052405660C6E6F8A03DDB /* ControlPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49CAC0B34AD331676A80CC7 /* ControlPanel.swift */; };
 		C23E7040688911A149D0FE9D /* NowPlaying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33561FF5F29D879BA8162B2B /* NowPlaying.swift */; };
 		CD18181C58AE448608C7C28F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 593F2B9FE0424F006F8469F1 /* Assets.xcassets */; };
 		E0C594F5645E50016C7AF36E /* ForteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174EF9E7CC9A4FDF31B79A1C /* ForteApp.swift */; };
+		E1483CF6DF7D8E54837612FF /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2702A4666D87A5F097EA942 /* Components.swift */; };
 		F2A044EDA5A0979CF002E581 /* NowPlayingHelper.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F6E90204A9FD10A710C9E908 /* NowPlayingHelper.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -48,23 +47,22 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		122FD33A0E4351CF35BC61DE /* MainPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPage.swift; sourceTree = "<group>"; };
 		174EF9E7CC9A4FDF31B79A1C /* ForteApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForteApp.swift; sourceTree = "<group>"; };
-		18C71E966A4ED82238F395FF /* SoundTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundTab.swift; sourceTree = "<group>"; };
-		1F5AFDE9D82ABC8E7C5744E8 /* Controls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Controls.swift; sourceTree = "<group>"; };
+		175159F08C77586134D0CFC2 /* EqualizerPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqualizerPage.swift; sourceTree = "<group>"; };
 		2C1A485E1B136EB423346FE0 /* Forte.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Forte.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		33561FF5F29D879BA8162B2B /* NowPlaying.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlaying.swift; sourceTree = "<group>"; };
-		392064D80890BEE449E39C72 /* MixerTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MixerTab.swift; sourceTree = "<group>"; };
 		49259E2C6360F52893082B75 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		593F2B9FE0424F006F8469F1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		963EAA7CC31EEFFE3A4D7CD6 /* DetailPages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailPages.swift; sourceTree = "<group>"; };
 		9BDC186F4A1615B3C96AAA68 /* BSNowPlaying.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSNowPlaying.m; sourceTree = "<group>"; };
 		A950F83CC90C44101EFFBB28 /* ForteKit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ForteKit; path = Packages/ForteKit; sourceTree = SOURCE_ROOT; };
 		B22D325A212D0017F0A28DB8 /* AudioController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioController.swift; sourceTree = "<group>"; };
 		B2C74B60A2E2A84C2FED4C3A /* Forte.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Forte.entitlements; sourceTree = "<group>"; };
 		B49CAC0B34AD331676A80CC7 /* ControlPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlPanel.swift; sourceTree = "<group>"; };
+		C2702A4666D87A5F097EA942 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
 		D4520FC0B448265BE8F17266 /* MeterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeterModel.swift; sourceTree = "<group>"; };
-		D4D20C5FCDD12AAD9602921A /* DevicesTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesTab.swift; sourceTree = "<group>"; };
 		F6E90204A9FD10A710C9E908 /* NowPlayingHelper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NowPlayingHelper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F7EDD23AEE18753AB3A13716 /* EqualizerCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqualizerCard.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,12 +113,11 @@
 		CA9BA82076BE00E1B54A58FF /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				C2702A4666D87A5F097EA942 /* Components.swift */,
 				B49CAC0B34AD331676A80CC7 /* ControlPanel.swift */,
-				1F5AFDE9D82ABC8E7C5744E8 /* Controls.swift */,
-				D4D20C5FCDD12AAD9602921A /* DevicesTab.swift */,
-				F7EDD23AEE18753AB3A13716 /* EqualizerCard.swift */,
-				392064D80890BEE449E39C72 /* MixerTab.swift */,
-				18C71E966A4ED82238F395FF /* SoundTab.swift */,
+				963EAA7CC31EEFFE3A4D7CD6 /* DetailPages.swift */,
+				175159F08C77586134D0CFC2 /* EqualizerPage.swift */,
+				122FD33A0E4351CF35BC61DE /* MainPage.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -243,15 +240,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A7F93909F8B3AAF748C1F79 /* AudioController.swift in Sources */,
+				E1483CF6DF7D8E54837612FF /* Components.swift in Sources */,
 				B5F052405660C6E6F8A03DDB /* ControlPanel.swift in Sources */,
-				3E5DCB3E5991EF9C5DD77148 /* Controls.swift in Sources */,
-				7CF7AD21BEB8C9DCEE6A6957 /* DevicesTab.swift in Sources */,
-				06B87AF4DE5A2A8C05CA85AE /* EqualizerCard.swift in Sources */,
+				91A5C8B7D353C17A82B7090F /* DetailPages.swift in Sources */,
+				0EF5BB097AE5AF400A5BDC54 /* EqualizerPage.swift in Sources */,
 				E0C594F5645E50016C7AF36E /* ForteApp.swift in Sources */,
+				54439C8AC05BEE503431EB28 /* MainPage.swift in Sources */,
 				812C16B6CF2DF7821C05258B /* MeterModel.swift in Sources */,
-				3CC6656DAC1CB7CA8C17B018 /* MixerTab.swift in Sources */,
 				C23E7040688911A149D0FE9D /* NowPlaying.swift in Sources */,
-				B39690CCA28DD6BAB1668364 /* SoundTab.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

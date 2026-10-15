@@ -57,22 +57,27 @@ final class MeterModel {
         let dt = Float(now.timeIntervalSince(lastTick))
         lastTick = now
 
+        // Assign only on change: every observed write re-renders the views reading it.
         let peaks = [reading.output.left, reading.output.right].map(Self.dB)
+        var newOutput = output, newHold = peakHold
         for c in 0..<2 {
-            output[c] = max(peaks[c], output[c] - 30 * dt) // 30 dB/s fall
+            newOutput[c] = max(-120, max(peaks[c], output[c] - 30 * dt)) // 30 dB/s fall
             if peaks[c] >= peakHold[c] {
-                peakHold[c] = peaks[c]
+                newHold[c] = peaks[c]
                 holdUntil[c] = now.addingTimeInterval(1.2)
             } else if now > holdUntil[c] {
-                peakHold[c] = max(output[c], peakHold[c] - 20 * dt)
+                newHold[c] = max(newOutput[c], peakHold[c] - 20 * dt)
             }
         }
-        gainReduction = max(reading.gainReduction, gainReduction - 12 * dt)
+        if newOutput != output { output = newOutput }
+        if newHold != peakHold { peakHold = newHold }
+        let reduction = max(0, max(reading.gainReduction, gainReduction - 12 * dt))
+        if reduction != gainReduction { gainReduction = reduction }
 
         var levels: [String: Float] = [:]
         for tap in router.plan.appTaps {
             let peak = Self.dB(router.readPeak(forApp: tap.appID) ?? 0)
-            levels[tap.appID] = max(peak, (appLevels[tap.appID] ?? -120) - 30 * dt)
+            levels[tap.appID] = max(-120, max(peak, (appLevels[tap.appID] ?? -120) - 30 * dt))
         }
         if levels != appLevels { appLevels = levels }
     }

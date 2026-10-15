@@ -10,6 +10,7 @@ struct ForteApp: App {
             ControlPanel()
                 .environment(appDelegate.controller)
                 .environment(appDelegate.controller.meters)
+                .environment(appDelegate.controller.nowPlaying)
         } label: {
             MenuBarIcon(controller: appDelegate.controller)
         }
@@ -22,6 +23,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     let controller = AudioController()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        #if DEBUG
+        // Screenshot hook: `-appearance light` / `-appearance dark`.
+        switch UserDefaults.standard.string(forKey: "appearance") {
+        case "light": NSApp.appearance = NSAppearance(named: .aqua)
+        case "dark": NSApp.appearance = NSAppearance(named: .darkAqua)
+        default: break
+        }
+        #endif
         controller.activate()
     }
 

@@ -22,16 +22,17 @@ struct DeviceInfo: Identifiable, Equatable {
     var id: AudioObjectID { device.id }
 }
 
-enum PanelTab: String, CaseIterable, Identifiable {
-    case sound = "Sound", mixer = "Mixer", equalizer = "EQ", devices = "Devices"
-    var id: String { rawValue }
+/// The panel's main page and the detail pages it drills into.
+enum PanelPage: String, Hashable {
+    case main, equalizer, effects, microphone, devices
 }
 
 /// App state: persisted sound settings, the live audio route, system volume, the per-app mixer and devices.
 @MainActor @Observable
 final class AudioController {
     enum Status: Equatable {
-        case off, starting, running, needsPermission
+        /// `standby`: on, but idle (no tap, no recording indicator) until sound plays and an effect is active.
+        case off, standby, starting, running, needsPermission
         case failed(String)
     }
 
@@ -60,6 +61,7 @@ final class AudioController {
     var boostDB: Float {
         didSet {
             processor?.setBoost(boostDB)
+            evaluateRoute()
             defaults.set(boostDB, forKey: Key.boost)
         }
     }
@@ -67,6 +69,7 @@ final class AudioController {
     var eqEnabled: Bool {
         didSet {
             processor?.setEQEnabled(eqEnabled)
+            evaluateRoute()
             defaults.set(eqEnabled, forKey: Key.eqEnabled)
         }
     }
@@ -76,6 +79,7 @@ final class AudioController {
             for band in eqGains.indices where band >= oldValue.count || eqGains[band] != oldValue[band] {
                 processor?.setEQGain(eqGains[band], band: band)
             }
+            evaluateRoute()
             defaults.set(eqGains, forKey: Key.eqGains)
         }
     }
@@ -83,6 +87,7 @@ final class AudioController {
     var bassDB: Float {
         didSet {
             processor?.setBass(bassDB)
+            evaluateRoute()
             defaults.set(bassDB, forKey: Key.bass)
         }
     }
@@ -90,6 +95,7 @@ final class AudioController {
     var trebleDB: Float {
         didSet {
             processor?.setTreble(trebleDB)
+            evaluateRoute()
             defaults.set(trebleDB, forKey: Key.treble)
         }
     }
@@ -97,6 +103,7 @@ final class AudioController {
     var balance: Float {
         didSet {
             processor?.setBalance(balance)
+            evaluateRoute()
             defaults.set(balance, forKey: Key.balance)
         }
     }
@@ -104,6 +111,7 @@ final class AudioController {
     var width: Float {
         didSet {
             processor?.setWidth(width)
+            evaluateRoute()
             defaults.set(width, forKey: Key.width)
         }
     }
@@ -133,11 +141,9 @@ final class AudioController {
         }
     }
 
-    var activeTab: PanelTab {
-        didSet {
-            defaults.set(activeTab.rawValue, forKey: Key.tab)
-            updatePolling()
-        }
+    /// Not persisted: like Control Center, the panel reopens on its main page.
+    var page: PanelPage = .main {
+        didSet { updatePolling() }
     }
 
     // MARK: Live state
@@ -145,7 +151,7 @@ final class AudioController {
     private(set) var status: Status = .off {
         didSet {
             status == .needsPermission ? watchPermission() : permissionTimer?.invalidate()
-            if (status == .running) != (oldValue == .running) { refreshOutputVolume() }
+            if status != oldValue { refreshOutputVolume() }
         }
     }
 
@@ -167,12 +173,28 @@ final class AudioController {
 
     var panelVisible = false {
         didSet {
+            guard panelVisible != oldValue else { return }
             meters.isVisible = panelVisible
+            if !panelVisible { page = .main }
+            #if DEBUG
+            // Screenshot hook: `-initialPage equalizer` opens the panel on that page.
+            if panelVisible, let initial = defaults.string(forKey: "initialPage").flatMap(PanelPage.init(rawValue:)) {
+                page = initial
+            }
+            #endif
             updatePolling()
         }
     }
 
     let meters = MeterModel()
+    let nowPlaying = NowPlaying()
+    @ObservationIgnored private let activity = AudioActivityMonitor()
+    @ObservationIgnored private var permissionReady = false
+    @ObservationIgnored private var idleTeardown: DispatchWorkItem?
+    /// Set when the captured audio has been silent with nothing playing in Now Playing, e.g. a paused browser tab
+    /// that keeps its audio stream open. Cleared when playback starts or an app newly starts making sound.
+    @ObservationIgnored private var quiet = false
+    @ObservationIgnored private var silenceTimer: Timer?
 
     @ObservationIgnored private var router: SystemAudioRouter? {
         didSet { meters.router = router }
@@ -196,7 +218,6 @@ final class AudioController {
         static let enabled = "enabled", boost = "boostDB", eqEnabled = "eqEnabled", eqGains = "eqGains"
         static let bass = "bassDB", treble = "trebleDB", balance = "balance", width = "width"
         static let customPresets = "customPresets", appVolumes = "appVolumes", softwareVolumes = "softwareVolumes"
-        static let tab = "tab"
     }
 
     init() {
@@ -219,7 +240,7 @@ final class AudioController {
         appVolumes = decode(Key.appVolumes, [String: AppVolume].self) ?? [:]
         softwareVolumes = decode(Key.softwareVolumes, [String: AppVolume].self) ?? [:]
         launchAtLogin = SMAppService.mainApp.status == .enabled
-        activeTab = defaults.string(forKey: Key.tab).flatMap(PanelTab.init(rawValue:)) ?? .sound
+        defaults.removeObject(forKey: "tab") // Left over from the tabbed layout.
     }
 
     /// One-time carry-over of settings saved before the app was renamed from BetterSound.
@@ -274,6 +295,15 @@ final class AudioController {
 
         refreshDevices()
         apps = AudioApps.current()
+        nowPlaying.start()
+        activity.onChange = { [weak self] _, started in
+            if started { self?.quiet = false }
+            self?.evaluateRoute()
+        }
+        nowPlaying.onPlaybackStarted = { [weak self] in
+            self?.quiet = false
+            self?.evaluateRoute()
+        }
         if isEnabled { start() }
         if defaults.bool(forKey: "diagnostics") { startDiagnostics() }
     }
@@ -281,6 +311,7 @@ final class AudioController {
     func shutdown() {
         startTask?.cancel()
         router = nil
+        nowPlaying.stop()
     }
 
     private func start() {
@@ -301,21 +332,90 @@ final class AudioController {
                 }
             }
             guard let self, !Task.isCancelled, self.isEnabled else { return }
-            self.buildRoute()
+            self.permissionReady = true
+            self.status = .standby
+            self.evaluateRoute()
         }
     }
 
     private func stop() {
         startTask?.cancel()
         restartWork?.cancel()
+        idleTeardown?.cancel()
+        idleTeardown = nil
+        permissionReady = false
+        tearDownRoute()
+        status = .off
+    }
+
+    /// True when processing would change the sound. Otherwise there is nothing to do, so no tap is needed.
+    private var needsProcessing: Bool {
+        boostDB > 0.01
+            || (eqEnabled && !isEqualizerFlat)
+            || abs(balance) > 0.001 || abs(width - 1) > 0.001
+            || apps.contains { appVolumes[$0.id] != nil }
+            || (outputVolumeMode == .software && (outputMuted || outputVolume < 0.999))
+    }
+
+    /// Runs the tap only while it matters: sound is playing and an effect is on. macOS shows its recording
+    /// indicator whenever the tap is running, so otherwise Forte releases it (after a short grace period, so
+    /// gaps between tracks don't churn) and waits in standby.
+    private func evaluateRoute() {
+        guard isEnabled, permissionReady else { return }
+        if case .failed = status { return } // Wait for a retry or a device change.
+        if needsProcessing && activity.isActive && !quiet {
+            idleTeardown?.cancel()
+            idleTeardown = nil
+            if router == nil, restartWork == nil { buildRoute() }
+        } else if router != nil {
+            guard idleTeardown == nil else { return }
+            let work = DispatchWorkItem { [weak self] in
+                MainActor.assumeIsolated {
+                    guard let self else { return }
+                    self.idleTeardown = nil
+                    guard !(self.needsProcessing && self.activity.isActive && !self.quiet) else { return }
+                    self.tearDownRoute()
+                    self.status = .standby
+                    self.log.notice("Standby: nothing to process")
+                }
+            }
+            idleTeardown = work
+            DispatchQueue.main.asyncAfter(deadline: .now() + 4, execute: work)
+        } else if status != .standby {
+            status = .standby
+        }
+    }
+
+    private func tearDownRoute() {
         router = nil
         routeListeners = []
         planTimer?.invalidate()
-        status = .off
+        silenceTimer?.invalidate()
+        silenceTimer = nil
+    }
+
+    /// While routing, notice pauses that leave an app's audio stream open: 6 s of silence (before per-app gain)
+    /// with nothing playing in Now Playing counts as idle.
+    private func watchForSilence() {
+        quiet = false
+        silenceTimer?.invalidate()
+        silenceTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated {
+                guard let self, !self.quiet, let processor = self.processor,
+                      processor.secondsSinceSound > 6, !self.nowPlaying.isPlaying else { return }
+                self.quiet = true
+                self.idleTeardown?.cancel()
+                self.idleTeardown = nil
+                self.tearDownRoute() // Already silent for 6 s, so no further grace period.
+                self.status = .standby
+                self.log.notice("Standby: silent with nothing playing")
+            }
+        }
     }
 
     func retry() {
         guard isEnabled else { isEnabled = true; return }
+        if case .failed = status { status = .standby }
         start()
     }
 
@@ -333,6 +433,7 @@ final class AudioController {
             outputDevice = device
             sampleRate = router.sampleRate
             status = .running
+            watchForSilence()
             routeListeners = [kAudioDevicePropertyNominalSampleRate, kAudioDevicePropertyDeviceIsAlive].compactMap {
                 try? AudioPropertyListener(object: device.id, selector: $0) { [weak self] in self?.scheduleRestart() }
             }
@@ -349,8 +450,11 @@ final class AudioController {
         restartWork?.cancel()
         let work = DispatchWorkItem { [weak self] in
             MainActor.assumeIsolated {
-                guard let self, self.isEnabled, self.status != .needsPermission else { return }
-                self.buildRoute()
+                guard let self else { return }
+                self.restartWork = nil
+                guard self.isEnabled, self.permissionReady else { return }
+                if case .failed = self.status { self.status = .standby }
+                if self.router != nil { self.buildRoute() } else { self.evaluateRoute() }
             }
         }
         restartWork = work
@@ -401,7 +505,7 @@ final class AudioController {
     }
 
     private func updatePolling() {
-        let mixerOpen = panelVisible && activeTab == .mixer
+        let mixerOpen = panelVisible && page == .main
         if mixerOpen, appsTimer == nil {
             apps = AudioApps.current()
             appsTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
@@ -470,8 +574,8 @@ final class AudioController {
             outputVolumeMode = .hardware
             outputVolume = device.volume(.output) ?? 1
             outputMuted = device.isMuted(.output) ?? false
-        } else if router != nil {
-            outputVolumeMode = .software
+        } else if isEnabled {
+            outputVolumeMode = .software // Applied by the route, which starts on demand.
             let stored = softwareVolumes[device.uid] ?? AppVolume()
             outputVolume = stored.volume
             outputMuted = stored.muted
@@ -517,6 +621,7 @@ final class AudioController {
         let setting = AppVolume(volume: outputVolume, muted: outputMuted)
         softwareVolumes[device.uid] = setting
         processor?.setOutputGain(softwareGain(setting))
+        evaluateRoute()
     }
 
     private func refreshInputVolume() {
@@ -555,6 +660,7 @@ final class AudioController {
     func resetAppVolumes() {
         for appID in appVolumes.keys { router?.setGain(1, forApp: appID) }
         appVolumes = [:]
+        evaluateRoute()
     }
 
     private func updateApp(_ appID: String, _ change: (inout AppVolume) -> Void) {
@@ -564,8 +670,9 @@ final class AudioController {
         if let router, router.mixes(appID) {
             router.setGain(setting.gain, forApp: appID)
         } else if !setting.isDefault {
-            reconcileRoute() // The app needs its own tap.
+            router == nil ? evaluateRoute() : reconcileRoute() // The app needs its own tap.
         }
+        evaluateRoute() // Back to all-default may mean nothing is left to process.
     }
 
     private func scheduleAppsRefresh() {
@@ -582,6 +689,7 @@ final class AudioController {
     private func refreshApps() {
         apps = AudioApps.current()
         reconcileRoute()
+        evaluateRoute()
     }
 
     private func logApps() {

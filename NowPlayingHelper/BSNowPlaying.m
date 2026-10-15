@@ -5,6 +5,7 @@
 // The process exits when Forte closes its end of stdin.
 
 #import <Foundation/Foundation.h>
+#import <ImageIO/ImageIO.h>
 #include <dlfcn.h>
 #include <unistd.h>
 
@@ -31,7 +32,8 @@ static NSString *BSNotificationName(const char *symbol) {
 }
 
 static void BSWriteLine(NSDictionary *object) {
-    NSData *json = [NSJSONSerialization dataWithJSONObject:object options:0 error:nil];
+    if (![NSJSONSerialization isValidJSONObject:object]) return; // dataWithJSONObject throws on NaN/Inf instead.
+    NSData *json = [NSJSONSerialization dataWithJSONObject:object options:NSJSONWritingWithoutEscapingSlashes error:nil];
     if (!json) return;
     fwrite(json.bytes, 1, json.length, stdout);
     fputc('\n', stdout);
@@ -40,7 +42,33 @@ static void BSWriteLine(NSDictionary *object) {
 
 static void BSCopy(NSDictionary *info, NSString *key, NSMutableDictionary *out, NSString *name) {
     id value = info[key];
+    if ([value isKindOfClass:NSNumber.class] && !isfinite([value doubleValue])) return; // Live streams report NaN/Inf.
     if ([value isKindOfClass:NSString.class] || [value isKindOfClass:NSNumber.class]) out[name] = value;
+}
+
+/// MediaRemote can hand over full-resolution artwork (one track sent ~70 MB); the panel only shows a thumbnail.
+static NSData *BSThumbnail(NSData *data) {
+    CGImageSourceRef source = CGImageSourceCreateWithData((__bridge CFDataRef)data, NULL);
+    if (!source) return nil;
+    NSDictionary *options = @{
+        (id)kCGImageSourceCreateThumbnailFromImageAlways: @YES,
+        (id)kCGImageSourceCreateThumbnailWithTransform: @YES,
+        (id)kCGImageSourceThumbnailMaxPixelSize: @256,
+    };
+    CGImageRef image = CGImageSourceCreateThumbnailAtIndex(source, 0, (__bridge CFDictionaryRef)options);
+    CFRelease(source);
+    if (!image) return nil;
+    NSMutableData *png = [NSMutableData data];
+    CGImageDestinationRef destination =
+        CGImageDestinationCreateWithData((__bridge CFMutableDataRef)png, CFSTR("public.png"), 1, NULL);
+    BOOL written = NO;
+    if (destination) {
+        CGImageDestinationAddImage(destination, image, NULL);
+        written = CGImageDestinationFinalize(destination);
+        CFRelease(destination);
+    }
+    CGImageRelease(image);
+    return written ? png : nil;
 }
 
 static void BSEmitState(void) {
@@ -90,7 +118,8 @@ static void BSEmitState(void) {
                                                      out[@"album"] ?: @""];
         BOOL sameTrack = [track isEqualToString:lastTrack];
         if (data && ![data isEqualToData:lastArtwork]) {
-            out[@"artwork"] = [data base64EncodedStringWithOptions:0];
+            NSData *thumbnail = BSThumbnail(data);
+            out[@"artwork"] = thumbnail ? [thumbnail base64EncodedStringWithOptions:0] : @"";
             lastArtwork = data;
         } else if (!data && !sameTrack && lastArtwork) {
             out[@"artwork"] = @"";

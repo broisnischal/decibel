@@ -71,7 +71,7 @@ targets:
         ENABLE_HARDENED_RUNTIME: YES
         SKIP_INSTALL: YES
         DYLIB_INSTALL_NAME_BASE: "@rpath"
-        OTHER_LDFLAGS: -framework Foundation
+        OTHER_LDFLAGS: -framework Foundation -framework ImageIO -framework CoreGraphics
 schemes:
   Forte:
     build:

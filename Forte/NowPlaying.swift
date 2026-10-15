@@ -33,13 +33,17 @@ final class NowPlaying {
 
     @ObservationIgnored private var process: Process?
     @ObservationIgnored private var input: FileHandle?
+    /// The incomplete line received so far.
     @ObservationIgnored private var buffer = Data()
+    /// Skipping the rest of a line that outgrew `maxLineLength`.
+    @ObservationIgnored private var discarding = false
     @ObservationIgnored private var failures: [Date] = []
     @ObservationIgnored private var stopping = false
     @ObservationIgnored private var wasPlaying = false
     @ObservationIgnored private let log = Logger(subsystem: "io.github.broisnischal.forte", category: "nowplaying")
 
     private static let perl = URL(fileURLWithPath: "/usr/bin/perl")
+    private static let maxLineLength = 8 << 20
     private static let loader = """
         use DynaLoader;
         my $lib = DynaLoader::dl_load_file($ARGV[0], 0) or die DynaLoader::dl_error();
@@ -58,6 +62,8 @@ final class NowPlaying {
         guard process == nil, let helperURL, FileManager.default.isExecutableFile(atPath: Self.perl.path),
               FileManager.default.fileExists(atPath: helperURL.path) else { return }
         stopping = false
+        buffer.removeAll()
+        discarding = false
 
         let process = Process()
         process.executableURL = Self.perl
@@ -69,6 +75,10 @@ final class NowPlaying {
 
         stdout.fileHandleForReading.readabilityHandler = { [weak self] handle in
             let data = handle.availableData
+            guard !data.isEmpty else {
+                handle.readabilityHandler = nil // End of file; the handler would otherwise keep firing.
+                return
+            }
             DispatchQueue.main.async {
                 MainActor.assumeIsolated { self?.consume(data) }
             }
@@ -129,13 +139,25 @@ final class NowPlaying {
         }
     }
 
+    /// Splits the helper's output into lines, looking at each byte once: rescanning the pending line for every
+    /// chunk is quadratic and froze the main thread on a ~90 MB artwork line.
     private func consume(_ data: Data) {
-        guard !data.isEmpty else { return }
-        buffer.append(data)
-        while let newline = buffer.firstIndex(of: 0x0A) {
-            let line = buffer[buffer.startIndex..<newline]
-            buffer.removeSubrange(buffer.startIndex...newline)
-            if let object = try? JSONSerialization.jsonObject(with: line) as? [String: Any] { apply(object) }
+        var rest = data
+        while let newline = rest.firstIndex(of: 0x0A) {
+            if !discarding {
+                buffer.append(rest[..<newline])
+                if let object = try? JSONSerialization.jsonObject(with: buffer) as? [String: Any] { apply(object) }
+            }
+            buffer.removeAll(keepingCapacity: true)
+            discarding = false
+            rest = rest[(newline + 1)...]
+        }
+        guard !discarding else { return }
+        buffer.append(rest)
+        if buffer.count > Self.maxLineLength {
+            log.error("Now Playing helper sent a line over \(Self.maxLineLength) bytes; dropping it")
+            buffer.removeAll()
+            discarding = true
         }
     }
 

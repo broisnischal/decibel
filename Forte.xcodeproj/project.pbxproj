@@ -10,30 +10,60 @@
 		06B87AF4DE5A2A8C05CA85AE /* EqualizerCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EDD23AEE18753AB3A13716 /* EqualizerCard.swift */; };
 		3CC6656DAC1CB7CA8C17B018 /* MixerTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 392064D80890BEE449E39C72 /* MixerTab.swift */; };
 		3E5DCB3E5991EF9C5DD77148 /* Controls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F5AFDE9D82ABC8E7C5744E8 /* Controls.swift */; };
+		5E20D86F8F57EED68E69D7C4 /* BSNowPlaying.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BDC186F4A1615B3C96AAA68 /* BSNowPlaying.m */; };
 		6FA0EB3119564B75DF56D9C7 /* ForteKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3C585197833C6F20093C0994 /* ForteKit */; };
 		7A7F93909F8B3AAF748C1F79 /* AudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B22D325A212D0017F0A28DB8 /* AudioController.swift */; };
 		7CF7AD21BEB8C9DCEE6A6957 /* DevicesTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D20C5FCDD12AAD9602921A /* DevicesTab.swift */; };
 		812C16B6CF2DF7821C05258B /* MeterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4520FC0B448265BE8F17266 /* MeterModel.swift */; };
 		B39690CCA28DD6BAB1668364 /* SoundTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C71E966A4ED82238F395FF /* SoundTab.swift */; };
 		B5F052405660C6E6F8A03DDB /* ControlPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49CAC0B34AD331676A80CC7 /* ControlPanel.swift */; };
+		C23E7040688911A149D0FE9D /* NowPlaying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33561FF5F29D879BA8162B2B /* NowPlaying.swift */; };
 		CD18181C58AE448608C7C28F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 593F2B9FE0424F006F8469F1 /* Assets.xcassets */; };
 		E0C594F5645E50016C7AF36E /* ForteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174EF9E7CC9A4FDF31B79A1C /* ForteApp.swift */; };
+		F2A044EDA5A0979CF002E581 /* NowPlayingHelper.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F6E90204A9FD10A710C9E908 /* NowPlayingHelper.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		84A1FEBCC56E6D66E4F777D3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 54E95E4B139F5C2C05511AB9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CC1F7ECC259F08C0FDBAEBD6;
+			remoteInfo = NowPlayingHelper;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		95D02B65841CB3EBECBE4F11 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F2A044EDA5A0979CF002E581 /* NowPlayingHelper.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		174EF9E7CC9A4FDF31B79A1C /* ForteApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForteApp.swift; sourceTree = "<group>"; };
 		18C71E966A4ED82238F395FF /* SoundTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundTab.swift; sourceTree = "<group>"; };
 		1F5AFDE9D82ABC8E7C5744E8 /* Controls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Controls.swift; sourceTree = "<group>"; };
 		2C1A485E1B136EB423346FE0 /* Forte.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Forte.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		33561FF5F29D879BA8162B2B /* NowPlaying.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlaying.swift; sourceTree = "<group>"; };
 		392064D80890BEE449E39C72 /* MixerTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MixerTab.swift; sourceTree = "<group>"; };
 		49259E2C6360F52893082B75 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		593F2B9FE0424F006F8469F1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9BDC186F4A1615B3C96AAA68 /* BSNowPlaying.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSNowPlaying.m; sourceTree = "<group>"; };
 		A950F83CC90C44101EFFBB28 /* ForteKit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ForteKit; path = Packages/ForteKit; sourceTree = SOURCE_ROOT; };
 		B22D325A212D0017F0A28DB8 /* AudioController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioController.swift; sourceTree = "<group>"; };
 		B2C74B60A2E2A84C2FED4C3A /* Forte.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Forte.entitlements; sourceTree = "<group>"; };
 		B49CAC0B34AD331676A80CC7 /* ControlPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlPanel.swift; sourceTree = "<group>"; };
 		D4520FC0B448265BE8F17266 /* MeterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeterModel.swift; sourceTree = "<group>"; };
 		D4D20C5FCDD12AAD9602921A /* DevicesTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesTab.swift; sourceTree = "<group>"; };
+		F6E90204A9FD10A710C9E908 /* NowPlayingHelper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NowPlayingHelper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F7EDD23AEE18753AB3A13716 /* EqualizerCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqualizerCard.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -58,15 +88,25 @@
 				174EF9E7CC9A4FDF31B79A1C /* ForteApp.swift */,
 				49259E2C6360F52893082B75 /* Info.plist */,
 				D4520FC0B448265BE8F17266 /* MeterModel.swift */,
+				33561FF5F29D879BA8162B2B /* NowPlaying.swift */,
 				CA9BA82076BE00E1B54A58FF /* Views */,
 			);
 			path = Forte;
+			sourceTree = "<group>";
+		};
+		A7601132EA0245790210389B /* NowPlayingHelper */ = {
+			isa = PBXGroup;
+			children = (
+				9BDC186F4A1615B3C96AAA68 /* BSNowPlaying.m */,
+			);
+			path = NowPlayingHelper;
 			sourceTree = "<group>";
 		};
 		AD5D9C020707F89F81B9B830 = {
 			isa = PBXGroup;
 			children = (
 				0C2551671DA3A9C4AF623F37 /* Forte */,
+				A7601132EA0245790210389B /* NowPlayingHelper */,
 				D254337F84A41397FB37F29A /* Packages */,
 				D57225858F39DB9D66C86DCE /* Products */,
 			);
@@ -97,6 +137,7 @@
 			isa = PBXGroup;
 			children = (
 				2C1A485E1B136EB423346FE0 /* Forte.app */,
+				F6E90204A9FD10A710C9E908 /* NowPlayingHelper.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -111,10 +152,12 @@
 				36D8CF913582D7703009321B /* Sources */,
 				B3847B091A282ECC31AD537A /* Resources */,
 				723C8D774F196F753E76DD5F /* Frameworks */,
+				95D02B65841CB3EBECBE4F11 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				AFAAB95AA99AC7999EEF1C05 /* PBXTargetDependency */,
 			);
 			name = Forte;
 			packageProductDependencies = (
@@ -123,6 +166,23 @@
 			productName = Forte;
 			productReference = 2C1A485E1B136EB423346FE0 /* Forte.app */;
 			productType = "com.apple.product-type.application";
+		};
+		CC1F7ECC259F08C0FDBAEBD6 /* NowPlayingHelper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D64DA46D809280ADC0F54239 /* Build configuration list for PBXNativeTarget "NowPlayingHelper" */;
+			buildPhases = (
+				B3D24E3F673A6EE1F431FE24 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NowPlayingHelper;
+			packageProductDependencies = (
+			);
+			productName = NowPlayingHelper;
+			productReference = F6E90204A9FD10A710C9E908 /* NowPlayingHelper.framework */;
+			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
@@ -134,6 +194,10 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					46E3AD75BDE8431978E28421 = {
+						DevelopmentTeam = H8HKVKKHWL;
+						ProvisioningStyle = Manual;
+					};
+					CC1F7ECC259F08C0FDBAEBD6 = {
 						DevelopmentTeam = H8HKVKKHWL;
 						ProvisioningStyle = Manual;
 					};
@@ -157,6 +221,7 @@
 			projectRoot = "";
 			targets = (
 				46E3AD75BDE8431978E28421 /* Forte */,
+				CC1F7ECC259F08C0FDBAEBD6 /* NowPlayingHelper */,
 			);
 		};
 /* End PBXProject section */
@@ -185,11 +250,28 @@
 				E0C594F5645E50016C7AF36E /* ForteApp.swift in Sources */,
 				812C16B6CF2DF7821C05258B /* MeterModel.swift in Sources */,
 				3CC6656DAC1CB7CA8C17B018 /* MixerTab.swift in Sources */,
+				C23E7040688911A149D0FE9D /* NowPlaying.swift in Sources */,
 				B39690CCA28DD6BAB1668364 /* SoundTab.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B3D24E3F673A6EE1F431FE24 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5E20D86F8F57EED68E69D7C4 /* BSNowPlaying.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AFAAB95AA99AC7999EEF1C05 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CC1F7ECC259F08C0FDBAEBD6 /* NowPlayingHelper */;
+			targetProxy = 84A1FEBCC56E6D66E4F777D3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		04224F3F8A807741F7475741 /* Release */ = {
@@ -278,6 +360,62 @@
 				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
+		};
+		45808013A43759064E099F21 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				OTHER_LDFLAGS = "-framework Foundation";
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.broisnischal.forte.nowplaying;
+				PRODUCT_NAME = BSNowPlaying;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		63A1EDF1952AF7704A0C832C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				OTHER_LDFLAGS = "-framework Foundation";
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.broisnischal.forte.nowplaying;
+				PRODUCT_NAME = BSNowPlaying;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
 		};
 		8EBA9CF27F2414B7B93ED97B /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -376,6 +514,15 @@
 			buildConfigurations = (
 				2323E3C71C846A9AE82352FD /* Debug */,
 				8EBA9CF27F2414B7B93ED97B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D64DA46D809280ADC0F54239 /* Build configuration list for PBXNativeTarget "NowPlayingHelper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				45808013A43759064E099F21 /* Debug */,
+				63A1EDF1952AF7704A0C832C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

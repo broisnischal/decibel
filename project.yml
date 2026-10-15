@@ -21,6 +21,10 @@ targets:
       - path: Forte
     dependencies:
       - package: ForteKit
+      - target: NowPlayingHelper
+        embed: true
+        link: false
+        codeSign: true
     info:
       path: Forte/Info.plist
       properties:
@@ -49,6 +53,25 @@ targets:
         CODE_SIGN_IDENTITY: Apple Development
         COMBINE_HIDPI_IMAGES: YES
         DEAD_CODE_STRIPPING: YES
+  # Loaded into /usr/bin/perl at runtime to reach MediaRemote (see NowPlayingHelper/BSNowPlaying.m).
+  NowPlayingHelper:
+    type: framework
+    platform: macOS
+    sources:
+      - path: NowPlayingHelper
+    settings:
+      base:
+        PRODUCT_NAME: BSNowPlaying
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.broisnischal.forte.nowplaying
+        GENERATE_INFOPLIST_FILE: YES
+        DEFINES_MODULE: NO
+        CLANG_ENABLE_OBJC_ARC: YES
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGN_IDENTITY: Apple Development
+        ENABLE_HARDENED_RUNTIME: YES
+        SKIP_INSTALL: YES
+        DYLIB_INSTALL_NAME_BASE: "@rpath"
+        OTHER_LDFLAGS: -framework Foundation
 schemes:
   Forte:
     build:

@@ -1,4 +1,4 @@
-# BetterSound
+# Forte
 
 A menu-bar app that makes your Mac louder and better-sounding, system-wide, with **no audio driver to install**.
 
@@ -25,7 +25,7 @@ A menu-bar app that makes your Mac louder and better-sounding, system-wide, with
 
 ## How it works
 
-macOS 14.2 added Core Audio **process taps**, which let one app capture and mute other apps' output. BetterSound:
+macOS 14.2 added Core Audio **process taps**, which let one app capture and mute other apps' output. Forte:
 
 ```
 apps you've adjusted ─▶ one tap per app ───┐
@@ -37,10 +37,10 @@ private aggregate device [ real output device + taps ]
 per-app gain + mix ─▶ EQ + tone ─▶ boost ─▶ width ─▶ balance ─▶ limiter ─▶ volume ─▶ real output device
 ```
 
-- BetterSound excludes itself from every tap. It also excludes processes that record the output device (eqMac's or Loopback's engine), which prevents feedback loops through virtual devices.
+- Forte excludes itself from every tap. It also excludes processes that record the output device (eqMac's or Loopback's engine), which prevents feedback loops through virtual devices.
 - An app gets its own tap the first time you change its volume. When it launches helpers or quits, the running taps' process lists are updated in place (`kAudioTapPropertyDescription`), so other audio never glitches.
 - Quitting the app (or a crash) destroys the taps and apps play normally again.
-- The DSP runs in plain C (`Packages/BetterSoundKit/Sources/BSKernel`), so the audio thread never allocates, locks or touches the Swift runtime. UI changes reach it through relaxed atomics and are smoothed (20 ms gains, 30 ms EQ) to avoid zipper noise.
+- The DSP runs in plain C (`Packages/ForteKit/Sources/BSKernel`), so the audio thread never allocates, locks or touches the Swift runtime. UI changes reach it through relaxed atomics and are smoothed (20 ms gains, 30 ms EQ) to avoid zipper noise.
 
 ## Requirements
 
@@ -51,20 +51,20 @@ per-app gain + mix ─▶ EQ + tone ─▶ boost ─▶ width ─▶ balance ─
 ## Build and run
 
 ```sh
-open BetterSound.xcodeproj           # then ⌘R
+open Forte.xcodeproj           # then ⌘R
 # or from the command line:
-xcodebuild -project BetterSound.xcodeproj -scheme BetterSound -derivedDataPath build/DerivedData build
-open build/DerivedData/Build/Products/Debug/BetterSound.app
+xcodebuild -project Forte.xcodeproj -scheme Forte -derivedDataPath build/DerivedData build
+open build/DerivedData/Build/Products/Debug/Forte.app
 ```
 
-On first launch macOS asks for **System Audio Recording** access. BetterSound needs it to read app audio, and the audio never leaves your Mac.
+On first launch macOS asks for **System Audio Recording** access. Forte needs it to read app audio, and the audio never leaves your Mac.
 
 Signing uses the Apple Development identity for team `H8HKVKKHWL` (set in `project.yml`). Change `DEVELOPMENT_TEAM` there and run `xcodegen generate` to use another team. Keep a stable signing identity: macOS ties the permission grant to it.
 
 ## Tests
 
 ```sh
-cd Packages/BetterSoundKit && swift test
+cd Packages/ForteKit && swift test
 ```
 
 The 15 tests cover:
@@ -77,19 +77,19 @@ The 15 tests cover:
 
 | Symptom | Fix |
 | --- | --- |
-| Banner says permission is needed | System Settings › Privacy & Security › Screen & System Audio Recording, then enable BetterSound under *System Audio Recording Only*. |
-| Reset the permission prompt | `tccutil reset AudioCapture com.bettersound.mac` |
-| Signal-flow debugging | Launch with `--args -diagnostics YES`, then run `/usr/bin/log stream --predicate 'subsystem == "com.bettersound.mac"'`. It logs input/output levels each second and the app list (▶ playing, `[mixed]` has its own tap) every 5 s. |
-| A mixed app's first sound leaks at 100% | A brand-new process plays through the shared tap until BetterSound claims it (normally within a few ms). Long-running apps are unaffected. |
+| Banner says permission is needed | System Settings › Privacy & Security › Screen & System Audio Recording, then enable Forte under *System Audio Recording Only*. |
+| Reset the permission prompt | `tccutil reset AudioCapture io.github.broisnischal.forte` |
+| Signal-flow debugging | Launch with `--args -diagnostics YES`, then run `/usr/bin/log stream --predicate 'subsystem == "io.github.broisnischal.forte"'`. It logs input/output levels each second and the app list (▶ playing, `[mixed]` has its own tap) every 5 s. |
+| A mixed app's first sound leaks at 100% | A brand-new process plays through the shared tap until Forte claims it (normally within a few ms). Long-running apps are unaffected. |
 
 ## Layout
 
 ```
-BetterSound/                 SwiftUI menu-bar app (controller, views, assets)
-Packages/BetterSoundKit/
+Forte/                 SwiftUI menu-bar app (controller, views, assets)
+Packages/ForteKit/
   Sources/BSKernel/          C DSP kernel + HAL IOProc
-  Sources/BetterSoundKit/    Core Audio plumbing: tap/aggregate router, devices and volume, app grouping, presets, permission
+  Sources/ForteKit/    Core Audio plumbing: tap/aggregate router, devices and volume, app grouping, presets, permission
   Tests/                     Swift Testing suites for the DSP and IOProc
 scripts/make-icon.swift      Regenerates the app icon set
-project.yml                  XcodeGen spec for BetterSound.xcodeproj
+project.yml                  XcodeGen spec for Forte.xcodeproj
 ```

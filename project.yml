@@ -1,7 +1,7 @@
-# Generate BetterSound.xcodeproj with: xcodegen generate
-name: BetterSound
+# Generate Forte.xcodeproj with: xcodegen generate
+name: Forte
 options:
-  bundleIdPrefix: com.bettersound
+  bundleIdPrefix: io.github.broisnischal
   deploymentTarget:
     macOS: "14.4"
   developmentLanguage: en
@@ -11,20 +11,20 @@ settings:
     MACOSX_DEPLOYMENT_TARGET: "14.4"
     DEVELOPMENT_TEAM: H8HKVKKHWL
 packages:
-  BetterSoundKit:
-    path: Packages/BetterSoundKit
+  ForteKit:
+    path: Packages/ForteKit
 targets:
-  BetterSound:
+  Forte:
     type: application
     platform: macOS
     sources:
-      - path: BetterSound
+      - path: Forte
     dependencies:
-      - package: BetterSoundKit
+      - package: ForteKit
     info:
-      path: BetterSound/Info.plist
+      path: Forte/Info.plist
       properties:
-        CFBundleDisplayName: BetterSound
+        CFBundleDisplayName: Forte
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         LSUIElement: true
@@ -32,15 +32,15 @@ targets:
         LSApplicationCategoryType: public.app-category.music
         NSSupportsAutomaticTermination: false
         NSSupportsSuddenTermination: false
-        NSAudioCaptureUsageDescription: BetterSound processes your Mac's sound output to boost volume and apply equalization. Audio never leaves your Mac.
+        NSAudioCaptureUsageDescription: Forte processes your Mac's sound output to boost volume and apply equalization. Audio never leaves your Mac.
     entitlements:
-      path: BetterSound/BetterSound.entitlements
+      path: Forte/Forte.entitlements
       properties:
         com.apple.security.device.audio-input: true
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.bettersound.mac
-        PRODUCT_NAME: BetterSound
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.broisnischal.forte
+        PRODUCT_NAME: Forte
         MARKETING_VERSION: 1.0.0
         CURRENT_PROJECT_VERSION: 1
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
@@ -50,10 +50,10 @@ targets:
         COMBINE_HIDPI_IMAGES: YES
         DEAD_CODE_STRIPPING: YES
 schemes:
-  BetterSound:
+  Forte:
     build:
       targets:
-        BetterSound: all
+        Forte: all
     run:
       config: Debug
     archive:

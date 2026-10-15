@@ -1,4 +1,4 @@
-// Renders the app icon set: swift scripts/make-icon.swift BetterSound/Assets.xcassets/AppIcon.appiconset
+// Renders the app icon set: swift scripts/make-icon.swift Forte/Assets.xcassets/AppIcon.appiconset
 import AppKit
 
 let outDir = URL(fileURLWithPath: CommandLine.arguments.dropFirst().first ?? ".")
@@ -33,20 +33,15 @@ func render(_ px: Int) -> Data {
     ] as CFArray, locations: [0, 0.55, 1])!
     ctx.drawLinearGradient(gradient, start: CGPoint(x: body.minX, y: body.maxY), end: CGPoint(x: body.maxX, y: body.minY), options: [])
 
-    // Equalizer bars.
-    let heights: [CGFloat] = [0.30, 0.52, 0.78, 0.98, 0.70, 0.46, 0.62]
-    let barWidth = 62 * s, gap = 34 * s
-    let total = CGFloat(heights.count) * barWidth + CGFloat(heights.count - 1) * gap
-    var x = body.midX - total / 2
-    let maxHeight = 520 * s
-    ctx.setFillColor(NSColor.white.cgColor)
-    for h in heights {
-        let height = maxHeight * h
-        let bar = CGRect(x: x, y: body.midY - height / 2, width: barWidth, height: height)
-        ctx.addPath(CGPath(roundedRect: bar, cornerWidth: barWidth / 2, cornerHeight: barWidth / 2, transform: nil))
-        ctx.fillPath()
-        x += barWidth + gap
-    }
+    // The forte marking from sheet music: a bold italic f.
+    let font = NSFont(name: "Baskerville-BoldItalic", size: 660 * s) ?? NSFont.systemFont(ofSize: 660 * s, weight: .heavy)
+    let line = CTLineCreateWithAttributedString(NSAttributedString(string: "f", attributes: [
+        .font: font, .foregroundColor: NSColor.white,
+    ]))
+    let bounds = CTLineGetImageBounds(line, ctx)
+    ctx.setShadow(offset: CGSize(width: 0, height: -8 * s), blur: 18 * s, color: NSColor.black.withAlphaComponent(0.25).cgColor)
+    ctx.textPosition = CGPoint(x: body.midX - bounds.midX, y: body.midY - bounds.midY)
+    CTLineDraw(line, ctx)
     ctx.restoreGState()
 
     NSGraphicsContext.restoreGraphicsState()

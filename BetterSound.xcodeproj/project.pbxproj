@@ -1,0 +1,400 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		21203C196A4E8B590F73DBE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AC8D9F22A776A1B204A1EFAD /* Assets.xcassets */; };
+		24FF1B37A54D287C04B84AC4 /* MixerTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D33A6CF9A2FA349F91D3CA5 /* MixerTab.swift */; };
+		2881992DC1B80B9EAE146827 /* BetterSoundKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2C88CDCFBA735CBEC8DC4D42 /* BetterSoundKit */; };
+		4B5518CF465AACB3504DFCED /* MeterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81C96AA6BB68468F83E68BCE /* MeterModel.swift */; };
+		6154CE887271EE1481719DEF /* BetterSoundApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACDA4EF2FF63AF2D45EC860 /* BetterSoundApp.swift */; };
+		6D255052E9EC92E9132BC938 /* DevicesTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 706E2280B368AFEDA547B6E0 /* DevicesTab.swift */; };
+		74B336C8822CC06A802D7E07 /* SoundTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC37CFF29375B07F76AE6ED /* SoundTab.swift */; };
+		7B005B66629325E01993FF4B /* EqualizerCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5E5E8264D82BE395F0260EF /* EqualizerCard.swift */; };
+		A008E7E92E9ADAE0F65ED211 /* AudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F51737AF460BBF5829087CEF /* AudioController.swift */; };
+		C780A6DC1787EFE9332A7B3B /* Controls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D742612E0052D8729F0D233 /* Controls.swift */; };
+		D196B3498FC498F6DC3FC7B0 /* ControlPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B8CF6EC9B866F275DEDADEE /* ControlPanel.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0AA82A82BF07770A7B7B5916 /* BetterSoundKit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = BetterSoundKit; path = Packages/BetterSoundKit; sourceTree = SOURCE_ROOT; };
+		0D33A6CF9A2FA349F91D3CA5 /* MixerTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MixerTab.swift; sourceTree = "<group>"; };
+		4D742612E0052D8729F0D233 /* Controls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Controls.swift; sourceTree = "<group>"; };
+		65D7503E0B3B51920823568B /* BetterSound.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BetterSound.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		706E2280B368AFEDA547B6E0 /* DevicesTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesTab.swift; sourceTree = "<group>"; };
+		81C96AA6BB68468F83E68BCE /* MeterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeterModel.swift; sourceTree = "<group>"; };
+		8E956DB6DC6FB03ADE1210DD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		9B8CF6EC9B866F275DEDADEE /* ControlPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlPanel.swift; sourceTree = "<group>"; };
+		AA31D571447DC1DB8FE7B95D /* BetterSound.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BetterSound.entitlements; sourceTree = "<group>"; };
+		AC8D9F22A776A1B204A1EFAD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AEC37CFF29375B07F76AE6ED /* SoundTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundTab.swift; sourceTree = "<group>"; };
+		E5E5E8264D82BE395F0260EF /* EqualizerCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqualizerCard.swift; sourceTree = "<group>"; };
+		EACDA4EF2FF63AF2D45EC860 /* BetterSoundApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetterSoundApp.swift; sourceTree = "<group>"; };
+		F51737AF460BBF5829087CEF /* AudioController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioController.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F6105BAA7DE139D54B4AED52 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2881992DC1B80B9EAE146827 /* BetterSoundKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2DE423693DF70483BCBD1B70 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				0AA82A82BF07770A7B7B5916 /* BetterSoundKit */,
+			);
+			path = Packages;
+			sourceTree = "<group>";
+		};
+		8DC5A04F6F9B7A15C6927E50 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				9B8CF6EC9B866F275DEDADEE /* ControlPanel.swift */,
+				4D742612E0052D8729F0D233 /* Controls.swift */,
+				706E2280B368AFEDA547B6E0 /* DevicesTab.swift */,
+				E5E5E8264D82BE395F0260EF /* EqualizerCard.swift */,
+				0D33A6CF9A2FA349F91D3CA5 /* MixerTab.swift */,
+				AEC37CFF29375B07F76AE6ED /* SoundTab.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		8F0646F66D2A39B12E3844BC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				65D7503E0B3B51920823568B /* BetterSound.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D09813447CBD48BECD4C6480 = {
+			isa = PBXGroup;
+			children = (
+				E48572BD7722FACB454CECFB /* BetterSound */,
+				2DE423693DF70483BCBD1B70 /* Packages */,
+				8F0646F66D2A39B12E3844BC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E48572BD7722FACB454CECFB /* BetterSound */ = {
+			isa = PBXGroup;
+			children = (
+				AC8D9F22A776A1B204A1EFAD /* Assets.xcassets */,
+				F51737AF460BBF5829087CEF /* AudioController.swift */,
+				AA31D571447DC1DB8FE7B95D /* BetterSound.entitlements */,
+				EACDA4EF2FF63AF2D45EC860 /* BetterSoundApp.swift */,
+				8E956DB6DC6FB03ADE1210DD /* Info.plist */,
+				81C96AA6BB68468F83E68BCE /* MeterModel.swift */,
+				8DC5A04F6F9B7A15C6927E50 /* Views */,
+			);
+			path = BetterSound;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		770666BE4D1EA63E6AB68082 /* BetterSound */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 698B56B3BA25D734090D0C04 /* Build configuration list for PBXNativeTarget "BetterSound" */;
+			buildPhases = (
+				538111A15C5D6400BED41A40 /* Sources */,
+				7F734EE0329A1CDBCBF50D30 /* Resources */,
+				F6105BAA7DE139D54B4AED52 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BetterSound;
+			packageProductDependencies = (
+				2C88CDCFBA735CBEC8DC4D42 /* BetterSoundKit */,
+			);
+			productName = BetterSound;
+			productReference = 65D7503E0B3B51920823568B /* BetterSound.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		963EE239F07B218E599209B6 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					770666BE4D1EA63E6AB68082 = {
+						DevelopmentTeam = H8HKVKKHWL;
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = FF97AF1D895D5B1BA0D484C8 /* Build configuration list for PBXProject "BetterSound" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = D09813447CBD48BECD4C6480;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				312921388D2E48C5CA1CF6CD /* XCLocalSwiftPackageReference "Packages/BetterSoundKit" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 8F0646F66D2A39B12E3844BC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				770666BE4D1EA63E6AB68082 /* BetterSound */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		7F734EE0329A1CDBCBF50D30 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				21203C196A4E8B590F73DBE5 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		538111A15C5D6400BED41A40 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A008E7E92E9ADAE0F65ED211 /* AudioController.swift in Sources */,
+				6154CE887271EE1481719DEF /* BetterSoundApp.swift in Sources */,
+				D196B3498FC498F6DC3FC7B0 /* ControlPanel.swift in Sources */,
+				C780A6DC1787EFE9332A7B3B /* Controls.swift in Sources */,
+				6D255052E9EC92E9132BC938 /* DevicesTab.swift in Sources */,
+				7B005B66629325E01993FF4B /* EqualizerCard.swift in Sources */,
+				4B5518CF465AACB3504DFCED /* MeterModel.swift in Sources */,
+				24FF1B37A54D287C04B84AC4 /* MixerTab.swift in Sources */,
+				74B336C8822CC06A802D7E07 /* SoundTab.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		040E9725F8A0C48F806D82AD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = H8HKVKKHWL;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		1616E2F72DAE76AF2E2F9057 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = BetterSound/BetterSound.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = BetterSound/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bettersound.mac;
+				PRODUCT_NAME = BetterSound;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		67847AB73DC862E5FAD8AB29 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = BetterSound/BetterSound.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = BetterSound/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bettersound.mac;
+				PRODUCT_NAME = BetterSound;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		7B35BF82D7C16D51BDE35981 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = H8HKVKKHWL;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		698B56B3BA25D734090D0C04 /* Build configuration list for PBXNativeTarget "BetterSound" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1616E2F72DAE76AF2E2F9057 /* Debug */,
+				67847AB73DC862E5FAD8AB29 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FF97AF1D895D5B1BA0D484C8 /* Build configuration list for PBXProject "BetterSound" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7B35BF82D7C16D51BDE35981 /* Debug */,
+				040E9725F8A0C48F806D82AD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		312921388D2E48C5CA1CF6CD /* XCLocalSwiftPackageReference "Packages/BetterSoundKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/BetterSoundKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2C88CDCFBA735CBEC8DC4D42 /* BetterSoundKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BetterSoundKit;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 963EE239F07B218E599209B6 /* Project object */;
+}

@@ -190,10 +190,11 @@ public final class AudioActivityMonitor {
     public private(set) var isActive = false
     /// Called when the set of playing processes changes; `started` is true when a process newly began output.
     public var onChange: ((_ active: Bool, _ started: Bool) -> Void)?
-    private var running: Set<AudioObjectID> = []
+    /// Process objects currently running output.
+    public private(set) var running: Set<AudioObjectID> = []
 
     private var listListener: AudioPropertyListener?
-    private var processListeners: [AudioObjectID: AudioPropertyListener] = [:]
+    private var processListeners: [AudioObjectID: [AudioPropertyListener]] = [:]
     private let ownPID = getpid()
 
     public init() {
@@ -208,8 +209,9 @@ public final class AudioActivityMonitor {
         processListeners = processListeners.filter { objects.contains($0.key) }
         for object in objects where processListeners[object] == nil {
             guard (try? HAL.read(object, kAudioProcessPropertyPID, initial: pid_t(0))) != ownPID else { continue }
-            processListeners[object] = try? AudioPropertyListener(object: object, selector: kAudioProcessPropertyIsRunningOutput) { [weak self] in
-                self?.evaluate()
+            // The HAL often signals only IsRunning when a process starts output, so listen to both and re-read.
+            processListeners[object] = [kAudioProcessPropertyIsRunning, kAudioProcessPropertyIsRunningOutput].compactMap {
+                try? AudioPropertyListener(object: object, selector: $0) { [weak self] in self?.evaluate() }
             }
         }
         evaluate()

@@ -376,7 +376,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				OTHER_LDFLAGS = "-framework Foundation";
+				OTHER_LDFLAGS = "-framework Foundation -framework ImageIO -framework CoreGraphics";
 				PRODUCT_BUNDLE_IDENTIFIER = io.github.broisnischal.forte.nowplaying;
 				PRODUCT_NAME = BSNowPlaying;
 				SDKROOT = macosx;
@@ -404,7 +404,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				OTHER_LDFLAGS = "-framework Foundation";
+				OTHER_LDFLAGS = "-framework Foundation -framework ImageIO -framework CoreGraphics";
 				PRODUCT_BUNDLE_IDENTIFIER = io.github.broisnischal.forte.nowplaying;
 				PRODUCT_NAME = BSNowPlaying;
 				SDKROOT = macosx;

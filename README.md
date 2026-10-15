@@ -2,6 +2,9 @@
 
 A menu-bar app that makes your Mac louder and better-sounding, system-wide, with **no audio driver to install**.
 
+**Now Playing**
+- Artwork, title, artist and source app for whatever is playing (Music, Spotify, a YouTube tab…), with previous, play/pause, next and a progress bar. Click the artwork to bring the app forward.
+
 **System volume**
 - Master output volume and mute, synced with the volume keys. The menu-bar icon shows the level.
 - Software volume for outputs macOS can't control (most HDMI/DisplayPort displays).
@@ -14,7 +17,7 @@ A menu-bar app that makes your Mac louder and better-sounding, system-wide, with
 
 **Devices**
 - Every speaker, headphone, USB DAC, Bluetooth and AirPlay output and every input, with channel count and transport.
-- One-click switching of the default output or input, and sample-rate selection where the device supports it.
+- One-click switching of the default output or input, and sample-rate selection where the device supports it (48 kHz suits most music and video; switching briefly interrupts sound).
 - Follows connection, disconnection, default-device and sample-rate changes, plus sleep/wake.
 
 **Sound**
@@ -40,6 +43,8 @@ per-app gain + mix ─▶ EQ + tone ─▶ boost ─▶ width ─▶ balance ─
 - Forte excludes itself from every tap. It also excludes processes that record the output device (eqMac's or Loopback's engine), which prevents feedback loops through virtual devices.
 - An app gets its own tap the first time you change its volume. When it launches helpers or quits, the running taps' process lists are updated in place (`kAudioTapPropertyDescription`), so other audio never glitches.
 - Quitting the app (or a crash) destroys the taps and apps play normally again.
+- **Standby:** the taps only exist while something is playing *and* an effect is on (boost, EQ, tone, balance, width, a per-app volume or software volume). Otherwise Forte releases them about 4 seconds later and watches each app's "running output" state, which needs no recording. macOS's purple recording indicator is therefore only shown while Forte is actually processing sound.
+- Now Playing uses Apple's private MediaRemote framework, which since macOS 15.4 only answers Apple-signed processes. Forte loads a small helper (`NowPlayingHelper/`, embedded as `BSNowPlaying.framework`) into `/usr/bin/perl`, which streams state as JSON lines and accepts transport commands on stdin. If that ever stops working, the Now Playing card simply stays hidden.
 - The DSP runs in plain C (`Packages/ForteKit/Sources/BSKernel`), so the audio thread never allocates, locks or touches the Swift runtime. UI changes reach it through relaxed atomics and are smoothed (20 ms gains, 30 ms EQ) to avoid zipper noise.
 
 ## Requirements
@@ -78,6 +83,7 @@ The 15 tests cover:
 | Symptom | Fix |
 | --- | --- |
 | Banner says permission is needed | System Settings › Privacy & Security › Screen & System Audio Recording, then enable Forte under *System Audio Recording Only*. |
+| Purple dot in the menu bar | That is macOS's system-audio-recording indicator. It shows only while Forte is processing (sound playing and an effect on) and turns off about 4 s after playback stops. |
 | Reset the permission prompt | `tccutil reset AudioCapture io.github.broisnischal.forte` |
 | Signal-flow debugging | Launch with `--args -diagnostics YES`, then run `/usr/bin/log stream --predicate 'subsystem == "io.github.broisnischal.forte"'`. It logs input/output levels each second and the app list (▶ playing, `[mixed]` has its own tap) every 5 s. |
 | A mixed app's first sound leaks at 100% | A brand-new process plays through the shared tap until Forte claims it (normally within a few ms). Long-running apps are unaffected. |
@@ -90,6 +96,7 @@ Packages/ForteKit/
   Sources/BSKernel/          C DSP kernel + HAL IOProc
   Sources/ForteKit/    Core Audio plumbing: tap/aggregate router, devices and volume, app grouping, presets, permission
   Tests/                     Swift Testing suites for the DSP and IOProc
+NowPlayingHelper/            MediaRemote bridge hosted by /usr/bin/perl
 scripts/make-icon.swift      Regenerates the app icon set
 project.yml                  XcodeGen spec for Forte.xcodeproj
 ```

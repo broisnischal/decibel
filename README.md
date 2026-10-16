@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="Decibel/Assets.xcassets/AppIcon.appiconset/icon_512x512.png" width="160" height="160" alt="Decibel app icon: a spun-aluminium volume knob turned up into the red, ringed by a glowing LED level meter">
+  <img src="Decibel/Assets.xcassets/AppIcon.appiconset/icon_512x512.png" width="160" height="160" alt="Decibel app icon: a black speaker grille whose holes glow into rings of sound">
 </p>
 
 <h1 align="center">Decibel</h1>
@@ -137,7 +137,7 @@ project.yml                  XcodeGen spec for Decibel.xcodeproj
 
 ## The icon
 
-A spun-aluminium hi-fi volume knob turned up into the red, ringed by an LED level meter that runs from green through amber to red, on an anodised plate engraved with "dB". It's drawn in code, so to change it, edit `scripts/make-icon.swift` and run:
+A black speaker grille whose holes swell and glow into rings of sound, like a ripple spreading from the centre. Monochrome, with simpler artwork at 16-64 px so it stays crisp in Finder lists and Spotlight. It's drawn in code, so to change it, edit `scripts/make-icon.swift` and run:
 
 ```sh
 swift scripts/make-icon.swift Decibel/Assets.xcassets/AppIcon.appiconset

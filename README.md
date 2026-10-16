@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="Decibel/Assets.xcassets/AppIcon.appiconset/icon_512x512.png" width="160" height="160" alt="Decibel app icon: a black speaker grille whose holes glow into rings of sound">
+  <img src="docs/icon.png" width="160" height="160" alt="Decibel app icon: a black speaker grille whose holes glow into rings of sound">
 </p>
 
 <h1 align="center">Decibel</h1>
@@ -160,15 +160,19 @@ Packages/DecibelKit/
   Sources/DecibelKit/        Core Audio plumbing: tap/aggregate router, devices and volume, app grouping, presets, permission
   Tests/                     Swift Testing suites for the DSP and IOProc
 NowPlayingHelper/            MediaRemote bridge hosted by /usr/bin/perl
-scripts/make-icon.swift      Renders the app icon set
+scripts/make-icon.swift      Generates the app icon (Decibel/AppIcon.icon) and docs/icon.png
 scripts/release.sh           Builds and packages a release (DMG, zip, checksums)
 project.yml                  XcodeGen spec for Decibel.xcodeproj
 ```
 
 ## The icon
 
-A black speaker grille whose holes swell and glow into rings of sound, like a ripple spreading from the centre. Monochrome, with simpler artwork at 16-64 px so it stays crisp in Finder lists and Spotlight. It's drawn in code, so to change it, edit `scripts/make-icon.swift` and run:
+A black speaker grille whose holes swell into a bright core and two rings of sound, like a ripple spreading from the centre.
+
+It's an Icon Composer icon (`Decibel/AppIcon.icon`) with vector artwork. On macOS 26 the system applies the icon shape, Liquid Glass and the dark, clear and tinted appearances, and draws it sharp at every size. For macOS 14 and 15, Xcode builds a regular `.icns` from it. The artwork is generated in code; to change it, edit `scripts/make-icon.swift` and run:
 
 ```sh
-swift scripts/make-icon.swift Decibel/Assets.xcassets/AppIcon.appiconset
+swift scripts/make-icon.swift Decibel/AppIcon.icon docs/icon.png
 ```
+
+You can also open `Decibel/AppIcon.icon` in Icon Composer (bundled with Xcode) to preview it.

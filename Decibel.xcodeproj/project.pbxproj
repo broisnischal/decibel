@@ -12,10 +12,10 @@
 		31ACF57341ABC4824824FB18 /* DetailPages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7796EF0F3F2F9B7AD2DC8BA5 /* DetailPages.swift */; };
 		51B0220C417CE02ED1F48294 /* MeterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42894B699345F0B060875370 /* MeterModel.swift */; };
 		60A23016E3ECBC4862DA55CF /* NowPlayingHelper.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B475A2D882DA5E47629A0931 /* NowPlayingHelper.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8F0448C729237B08BE9A2A47 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = B6C4330CF4ACF16691870701 /* AppIcon.icon */; };
 		99D19CA88BE41B450B8D22E5 /* EqualizerPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1114C785E396F05A4AA0220 /* EqualizerPage.swift */; };
 		B58DE71FBF0160A4D6932742 /* DecibelKit in Frameworks */ = {isa = PBXBuildFile; productRef = 26F40BA47D6E69E7340E5694 /* DecibelKit */; };
 		B65F42700B1D923E6B42C41F /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F8BF64C2FAE7FCE9458C70 /* Components.swift */; };
-		C4102EAF2FC37E9E5BCA2AEE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50F585744316B2301E9B76FB /* Assets.xcassets */; };
 		D18CA098E3A63E375D71E7ED /* NowPlaying.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C7E6E76F532979DCFBCB446 /* NowPlaying.swift */; };
 		D9A1456FE7814A2632390DF2 /* AudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB8F567BA666FFAB1CA4FB4 /* AudioController.swift */; };
 		F2DF36F15F7E8E0EA06603AA /* MainPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDF6BFD4718B758CFD28D4C /* MainPage.swift */; };
@@ -51,7 +51,6 @@
 		3AE51A92DB49A184DB334B55 /* DecibelApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecibelApp.swift; sourceTree = "<group>"; };
 		3FB8F567BA666FFAB1CA4FB4 /* AudioController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioController.swift; sourceTree = "<group>"; };
 		42894B699345F0B060875370 /* MeterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeterModel.swift; sourceTree = "<group>"; };
-		50F585744316B2301E9B76FB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5DDF6BFD4718B758CFD28D4C /* MainPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPage.swift; sourceTree = "<group>"; };
 		63FDC110C84F34DD6F36B967 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6C7E6E76F532979DCFBCB446 /* NowPlaying.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlaying.swift; sourceTree = "<group>"; };
@@ -59,6 +58,7 @@
 		76CBD185BDB73EA8A63AC9D1 /* Decibel.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Decibel.entitlements; sourceTree = "<group>"; };
 		7796EF0F3F2F9B7AD2DC8BA5 /* DetailPages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailPages.swift; sourceTree = "<group>"; };
 		B475A2D882DA5E47629A0931 /* NowPlayingHelper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NowPlayingHelper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B6C4330CF4ACF16691870701 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		C83BC648A663445F0D3AA0F8 /* ControlPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlPanel.swift; sourceTree = "<group>"; };
 		D03597A25ACF397ACC510802 /* Decibel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Decibel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1114C785E396F05A4AA0220 /* EqualizerPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqualizerPage.swift; sourceTree = "<group>"; };
@@ -88,7 +88,7 @@
 		3C3D43665A621AE707F628F5 /* Decibel */ = {
 			isa = PBXGroup;
 			children = (
-				50F585744316B2301E9B76FB /* Assets.xcassets */,
+				B6C4330CF4ACF16691870701 /* AppIcon.icon */,
 				3FB8F567BA666FFAB1CA4FB4 /* AudioController.swift */,
 				76CBD185BDB73EA8A63AC9D1 /* Decibel.entitlements */,
 				3AE51A92DB49A184DB334B55 /* DecibelApp.swift */,
@@ -228,7 +228,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C4102EAF2FC37E9E5BCA2AEE /* Assets.xcassets in Resources */,
+				8F0448C729237B08BE9A2A47 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -363,7 +363,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Decibel/Info.plist;
@@ -371,7 +371,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = io.github.broisnischal.decibel;
 				PRODUCT_NAME = Decibel;
 				SDKROOT = macosx;
@@ -478,7 +478,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Decibel/Info.plist;
@@ -486,7 +486,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = io.github.broisnischal.decibel;
 				PRODUCT_NAME = Decibel;
 				SDKROOT = macosx;

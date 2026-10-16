@@ -103,14 +103,29 @@ func render(_ px: Int) -> Data {
 
     let centre = CGPoint(x: body.midX, y: body.midY - 14 * s)
     let start = CGFloat.pi * 1.25, sweep = CGFloat.pi * 1.5 // 7:30 round to 4:30, like a real volume knob
-    let segments = 27, lit = 22
+    // Fewer, bolder LEDs at small sizes so the meter still reads in the Dock and Finder lists.
+    let tiny = px < 64, small = px < 256
+    let (segments, lit, lensWidth, coreWidth): (Int, Int, CGFloat, CGFloat) = small ? (15, 12, 34, 14) : (27, 22, 22, 9)
     let level = CGFloat(lit - 1) / CGFloat(segments - 1)
     let pointer = start - sweep * level
 
+    // At 16 and 32 pt, a continuous bar: separate LEDs would blur into a faint arc.
+    if tiny {
+        let steps = 120
+        ctx.setLineWidth(64 * s)
+        for k in 0..<steps {
+            let t0 = CGFloat(k) / CGFloat(steps), t1 = CGFloat(k + 1) / CGFloat(steps)
+            ctx.addArc(center: centre, radius: 330 * s, startAngle: start - sweep * t0,
+                       endAngle: start - sweep * min(1, t1 + 0.004), clockwise: true)
+            ctx.setStrokeColor(t0 <= level ? meter(t0) : mix(rgb(0x15161B), meter(t0), 0.25))
+            ctx.strokePath()
+        }
+    }
+
     // LED meter ring: recessed lenses, lit from quiet green into the red.
-    let lenses = (0..<segments).map { i -> (CGPath, CGColor, Bool) in
+    let lenses = tiny ? [] : (0..<segments).map { i -> (CGPath, CGColor, Bool) in
         let t = CGFloat(i) / CGFloat(segments - 1)
-        return (radialCapsule(centre, start - sweep * t, 304 * s, 356 * s, width: 22 * s), meter(t), i < lit)
+        return (radialCapsule(centre, start - sweep * t, 304 * s, 356 * s, width: lensWidth * s), meter(t), i < lit)
     }
     for (path, color, on) in lenses where !on {
         ctx.addPath(path)
@@ -131,7 +146,7 @@ func render(_ px: Int) -> Data {
     }
     for (i, (_, color, on)) in lenses.enumerated() where on {
         let angle = start - sweep * CGFloat(i) / CGFloat(segments - 1)
-        ctx.addPath(radialCapsule(centre, angle, 314 * s, 346 * s, width: 9 * s)) // hot core
+        ctx.addPath(radialCapsule(centre, angle, 314 * s, 346 * s, width: coreWidth * s)) // hot core
         ctx.setFillColor(mix(color, rgb(0xFFFFFF), 0.55).copy(alpha: 0.85)!)
         ctx.fillPath()
     }
@@ -235,7 +250,8 @@ func render(_ px: Int) -> Data {
 
     // Pointer: an engraved slot with an LED inside, matching the loudest lit segment.
     let tip = meter(level)
-    let slot = radialCapsule(centre, pointer, 104 * s, 168 * s, width: 24 * s)
+    let p: CGFloat = tiny ? 2.4 : small ? 1.4 : 1 // a bolder pointer where fine detail is lost
+    let slot = radialCapsule(centre, pointer, (104 - 30 * (p - 1)) * s, 168 * s, width: 24 * p * s)
     ctx.saveGState()
     ctx.addPath(slot)
     ctx.setFillColor(rgb(0x1A1B20))
@@ -247,14 +263,14 @@ func render(_ px: Int) -> Data {
     ctx.addPath(slot)
     ctx.fillPath(using: .evenOdd) // inner shadow
     ctx.restoreGState()
-    let led = radialCapsule(centre, pointer, 112 * s, 160 * s, width: 13 * s)
+    let led = radialCapsule(centre, pointer, (112 - 30 * (p - 1)) * s, 160 * s, width: 13 * p * s)
     ctx.saveGState()
     ctx.setShadow(offset: .zero, blur: 22 * s, color: tip)
     ctx.addPath(led)
     ctx.setFillColor(tip)
     ctx.fillPath()
     ctx.restoreGState()
-    ctx.addPath(radialCapsule(centre, pointer, 118 * s, 154 * s, width: 5 * s))
+    ctx.addPath(radialCapsule(centre, pointer, (118 - 30 * (p - 1)) * s, 154 * s, width: 5 * p * s))
     ctx.setFillColor(mix(tip, rgb(0xFFFFFF), 0.6))
     ctx.fillPath()
 

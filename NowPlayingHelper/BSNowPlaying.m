@@ -1,8 +1,8 @@
-// Now Playing bridge. Since macOS 15.4, MediaRemote only answers Apple-signed clients, so Forte loads this
+// Now Playing bridge. Since macOS 15.4, MediaRemote only answers Apple-signed clients, so Decibel loads this
 // library into /usr/bin/perl (identifier com.apple.perl) and talks to it over stdin/stdout:
 //   stdout: one JSON object per line whenever the now-playing state changes
 //   stdin:  "play" | "pause" | "toggle" | "next" | "previous" | "seek <seconds>" | "refresh"
-// The process exits when Forte closes its end of stdin.
+// The process exits when Decibel closes its end of stdin.
 
 #import <Foundation/Foundation.h>
 #import <ImageIO/ImageIO.h>
@@ -156,7 +156,7 @@ static void BSHandleCommand(NSString *line) {
 static void BSReadInput(void) {
     char buffer[512];
     ssize_t count = read(STDIN_FILENO, buffer, sizeof buffer);
-    if (count <= 0) exit(0); // Forte went away.
+    if (count <= 0) exit(0); // Decibel went away.
     [pendingInput appendBytes:buffer length:(NSUInteger)count];
     for (;;) {
         NSRange newline = [pendingInput rangeOfData:[NSData dataWithBytes:"\n" length:1] options:0

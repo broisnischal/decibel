@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="Decibel/Assets.xcassets/AppIcon.appiconset/icon_512x512.png" width="160" height="160" alt="Decibel app icon: five glowing level-meter bars rising from green to red">
+  <img src="Decibel/Assets.xcassets/AppIcon.appiconset/icon_512x512.png" width="160" height="160" alt="Decibel app icon: a spun-aluminium volume knob turned up into the red, ringed by a glowing LED level meter">
 </p>
 
 <h1 align="center">Decibel</h1>
@@ -137,7 +137,7 @@ project.yml                  XcodeGen spec for Decibel.xcodeproj
 
 ## The icon
 
-Five capsules rising like a crescendo, coloured along a level meter's ramp from green to amber to red: sound getting louder, measured in decibels. It's drawn in code, so to change it, edit `scripts/make-icon.swift` and run:
+A spun-aluminium hi-fi volume knob turned up into the red, ringed by an LED level meter that runs from green through amber to red, on an anodised plate engraved with "dB". It's drawn in code, so to change it, edit `scripts/make-icon.swift` and run:
 
 ```sh
 swift scripts/make-icon.swift Decibel/Assets.xcassets/AppIcon.appiconset

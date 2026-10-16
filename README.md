@@ -10,22 +10,46 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/macOS-14.4%2B-111?logo=apple&logoColor=white" alt="macOS 14.4+">
-  <img src="https://img.shields.io/badge/Swift-6-F05138?logo=swift&logoColor=white" alt="Swift 6">
-  <img src="https://img.shields.io/badge/SwiftUI-menu--bar%20app-0A84FF" alt="SwiftUI menu-bar app">
-  <img src="https://img.shields.io/badge/audio%20driver-none-2EE6A6" alt="No audio driver">
+  <a href="https://github.com/broisnischal/decibel/releases/latest"><img src="https://img.shields.io/badge/Download%20for%20macOS-000?style=for-the-badge&logo=apple&logoColor=white" alt="Download for macOS" height="36"></a>
 </p>
 
 <p align="center">
+  <a href="https://github.com/broisnischal/decibel/releases/latest"><img src="https://img.shields.io/github/v/release/broisnischal/decibel?color=111&label=release" alt="Latest release"></a>
+  <img src="https://img.shields.io/badge/macOS-14.4%2B-111?logo=apple&logoColor=white" alt="macOS 14.4+">
+  <img src="https://img.shields.io/badge/Apple%20silicon%20%2B%20Intel-universal-111" alt="Universal: Apple silicon and Intel">
+  <img src="https://img.shields.io/badge/Swift-6-111?logo=swift&logoColor=white" alt="Swift 6">
+  <img src="https://img.shields.io/badge/audio%20driver-none-111" alt="No audio driver">
+</p>
+
+<p align="center">
+  <a href="#install">Install</a> ·
   <a href="#features">Features</a> ·
   <a href="#how-it-works">How it works</a> ·
-  <a href="#build-and-run">Build and run</a> ·
+  <a href="#build-from-source">Build from source</a> ·
   <a href="#troubleshooting">Troubleshooting</a>
 </p>
 
 ---
 
 Decibel sits in the menu bar and processes everything your Mac plays: boost it up to 800% without clipping, shape it with an EQ, and set every app's volume on its own. It uses Core Audio process taps (macOS 14.2+), so there is no kernel extension, virtual device or driver to install, and quitting it puts your audio back exactly as it was.
+
+## Install
+
+1. Download `Decibel-<version>.dmg` from the [latest release](https://github.com/broisnischal/decibel/releases/latest). It's a universal app (Apple silicon and Intel) for macOS 14.4 or later.
+2. Open the DMG and drag **Decibel** onto **Applications**.
+3. Open Decibel from Applications. It lives in the menu bar, not the Dock.
+4. When macOS asks for **System Audio Recording** access, allow it. Decibel needs it to process other apps' sound, and the audio never leaves your Mac.
+
+To start Decibel when you log in, turn on **Open at Login** at the bottom of its panel.
+
+> [!NOTE]
+> **"Apple could not verify Decibel"?** Releases are code-signed but not yet notarized by Apple, so Gatekeeper blocks the first launch. Open **System Settings › Privacy & Security**, scroll down and click **Open Anyway**. You only need to do this once. From Terminal instead: `xattr -dr com.apple.quarantine /Applications/Decibel.app`
+
+Each release includes `SHA256SUMS.txt`; check your download with `shasum -a 256 -c SHA256SUMS.txt --ignore-missing`.
+
+### Upgrading from Forte
+
+Decibel was called Forte (and BetterSound before that). Boost, EQ, presets and per-app volumes are imported automatically on first launch. The bundle ID changed to `io.github.broisnischal.decibel`, so macOS asks for System Audio Recording access again, and *Open at Login* needs to be switched back on. You can delete the old `Forte.app`.
 
 ## Features
 
@@ -76,13 +100,13 @@ per-app gain + mix ─▶ EQ + tone ─▶ boost ─▶ width ─▶ balance ─
 
 **Privacy:** audio is processed in memory on your Mac and never written to disk or sent anywhere. Decibel makes no network requests.
 
-## Requirements
+## Build from source
+
+You need:
 
 - macOS 14.4 or later
 - Xcode 16 or later (built with Xcode 27 / Swift 6.4)
 - [XcodeGen](https://github.com/yonaskolb/XcodeGen) only if you change `project.yml`
-
-## Build and run
 
 ```sh
 git clone https://github.com/broisnischal/decibel.git && cd decibel
@@ -96,9 +120,14 @@ On first launch macOS asks for **System Audio Recording** access. Decibel needs 
 
 Signing uses the Apple Development identity for team `H8HKVKKHWL` (set in `project.yml`). Change `DEVELOPMENT_TEAM` there and run `xcodegen generate` to use another team. Keep a stable signing identity: macOS ties the permission grant to it.
 
-### Upgrading from Forte
+### Making a release
 
-Decibel was called Forte (and BetterSound before that). Boost, EQ, presets and per-app volumes are imported automatically on first launch. The bundle ID changed to `io.github.broisnischal.decibel`, so macOS asks for System Audio Recording access again, and *Open at Login* needs to be switched back on. You can delete the old `Forte.app`.
+Bump `MARKETING_VERSION` (and `CURRENT_PROJECT_VERSION`) in `project.yml`, run `xcodegen generate`, then:
+
+```sh
+scripts/release.sh                 # universal Release archive → dist/Decibel-<version>.dmg, .zip, SHA256SUMS.txt
+gh release create v<version> dist/* --title "Decibel <version>"
+```
 
 ## Tests
 
@@ -132,6 +161,7 @@ Packages/DecibelKit/
   Tests/                     Swift Testing suites for the DSP and IOProc
 NowPlayingHelper/            MediaRemote bridge hosted by /usr/bin/perl
 scripts/make-icon.swift      Renders the app icon set
+scripts/release.sh           Builds and packages a release (DMG, zip, checksums)
 project.yml                  XcodeGen spec for Decibel.xcodeproj
 ```
 

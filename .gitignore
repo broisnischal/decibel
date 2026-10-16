@@ -8,3 +8,4 @@ xcuserdata/
 
 # Local Claude Code tooling state
 .claude/phobos-*
+dist/
